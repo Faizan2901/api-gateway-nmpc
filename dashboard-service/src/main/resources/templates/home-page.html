@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Welcome - Nanhe Munhe Play Center</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
+    <meta http-equiv="Pragma" content="no-cache"/>
+    <meta http-equiv="Expires" content="0"/>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+        .navbar {
+            background-color: #ffffff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .navbar-brand, .nav-link {
+            color: #333 !important;
+            font-weight: bold;
+        }
+        .nav-link:hover {
+            color: #007bff !important;
+        }
+        .btn-login {
+            background-color: #007bff;
+            color: #fff !important;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+        .btn-login:hover {
+            background-color: #0056b3;
+            color: #fff !important;
+            transform: scale(1.05);
+        }
+        .hero-section {
+            background: url('https://source.unsplash.com/1600x900/?kids,school') no-repeat center center;
+            background-size: cover;
+            color: #333;
+            padding: 120px 0;
+            text-align: center;
+        }
+        .hero-section h1 {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+        .hero-section p {
+            font-size: 1.5em;
+        }
+        .btn-explore, .btn-register {
+            color: #fff;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1.2em;
+            margin: 10px;
+            transition: background-color 0.3s;
+        }
+        .btn-explore {
+            background-color: #007bff;
+        }
+        .btn-explore:hover {
+            background-color: #0056b3;
+        }
+        .btn-register {
+            background-color: #28a745;
+        }
+        .btn-register:hover {
+            background-color: #218838;
+        }
+        .section-title {
+            font-size: 2.5em;
+            margin-bottom: 40px;
+            text-align: center;
+            color: #333;
+        }
+        .section {
+            padding: 60px 0;
+        }
+        .about-section {
+            background-color: #f8f9fa;
+        }
+        .footer {
+            background-color: #ffffff;
+            color: #333;
+            padding: 20px 0;
+            text-align: center;
+            box-shadow: 0 -2px 4px rgba(0,0,0,0.1);
+        }
+        .fade-in {
+            animation: fadeIn 2s ease-in-out;
+        }
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg">
+        <a class="navbar-brand" href="#">Nanhe Munhe Play Center</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="#">About</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Announcements</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Contact</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link btn-login" th:href="@{/authentication-service/play-center/}">Login</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <h1 class="fade-in">Welcome to Nanhe Munhe Play Center</h1>
+            <p class="fade-in">A place where learning is fun and exciting</p>
+            <a href="/login" class="btn btn-explore fade-in">Explore</a>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="section about-section">
+        <div class="container">
+            <h2 class="section-title">About Us</h2>
+            <p>Nanhe Munhe Play Center is dedicated to providing a nurturing environment for young minds. Our programs are designed to foster creativity, learning, and growth. We believe in a holistic approach to education, focusing on both academic and personal development.</p>
+        </div>
+    </section>
+
+    <!-- Announcements Section -->
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title">Announcements</h2>
+            <ul>
+                <li>New term starts on September 1st.</li>
+                <li>Summer camp registration is now open.</li>
+                <li>Parents-teachers meeting on August 15th.</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 Nanhe Munhe Play Center. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+</html>
