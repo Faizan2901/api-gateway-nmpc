@@ -1,5 +1,6 @@
 package com.codemind.playcenter.authenticationservice.security;
 
+import jakarta.annotation.PostConstruct;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,41 +14,43 @@ import org.springframework.stereotype.Component;
 import com.codemind.playcenter.authenticationservice.config.ApplicationProperties;
 
 import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
-
-import javax.crypto.KeyGenerator;
-import javax.crypto.SecretKey;
 
 @Component
 public class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
 	@Autowired
-	ApplicationProperties applicationProperties;
-	
+	private ApplicationProperties applicationProperties;
+
+	private String redirectUrl;
+
+	@PostConstruct
+	public void init() {
+		this.redirectUrl = applicationProperties.getApiGatewayUrl();
+	}
+
 	@Autowired
-    private JwtUtil jwtUtil;
+	private JwtUtil jwtUtil;
 
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 			Authentication authentication) throws IOException, ServletException {
-		
-	 	String username = authentication.getName();
-        String token = jwtUtil.generateToken(username);
-       
-     // Set JWT as a cookie
-        Cookie jwtCookie = new Cookie("JWT", token);
-        jwtCookie.setHttpOnly(true);
-        jwtCookie.setSecure(true); // Ensure the cookie is only sent over HTTPS
-        jwtCookie.setPath("/"); // Set the path for the cookie
-        jwtCookie.setMaxAge(60 * 60 * 10); // Set the expiry to match the JWT's expiry time
 
-        response.addCookie(jwtCookie);
-        
-//        response.setHeader("Authorization", "Bearer " + token);
+		String username = authentication.getName();
+		String token = jwtUtil.generateToken(username);
+
+		// Set JWT as a cookie
+		Cookie jwtCookie = new Cookie("JWT", token);
+		jwtCookie.setHttpOnly(true);
+		jwtCookie.setSecure(true); // Ensure the cookie is only sent over HTTPS
+		jwtCookie.setPath("/"); // Set the path for the cookie
+		jwtCookie.setMaxAge(60 * 60 * 5); // Set the expiry to match the JWT's expiry time
+
+		response.addCookie(jwtCookie);
+
+		response.setHeader("Authorization", "Bearer " + token);
 
 		// Customize the redirection URL based on your requirements
-		response.sendRedirect("http://localhost:8765/dashboard-service/nmpc/dashboard-page"); // Redirect to the home-page
+		response.sendRedirect(redirectUrl + "/dashboard-service/nmpc/dashboard-page"); // Redirect to the home-page
 
 	}
 }

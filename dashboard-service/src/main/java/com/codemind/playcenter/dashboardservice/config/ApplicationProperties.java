@@ -9,9 +9,12 @@ import org.springframework.stereotype.Component;
 @Configuration
 @ConfigurationProperties(prefix = "application")
 public class ApplicationProperties {
-	
+
 	@Value("${api.gateway.url}")
 	private String apiGatewayUrl;
+
+	@Value("${auth.secret.key}")
+	private String authSecretKey;
 
 	public String getApiGatewayUrl() {
 		return apiGatewayUrl;
@@ -20,7 +23,13 @@ public class ApplicationProperties {
 	public void setApiGatewayUrl(String apiGatewayUrl) {
 		this.apiGatewayUrl = apiGatewayUrl;
 	}
-	
-	
+
+	public String getAuthSecretKey() {
+		return authSecretKey;
+	}
+
+	public void setAuthSecretKey(String authSecretKey) {
+		this.authSecretKey = authSecretKey;
+	}
 
 }
