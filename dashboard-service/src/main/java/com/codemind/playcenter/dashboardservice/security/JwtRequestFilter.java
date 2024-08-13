@@ -4,10 +4,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -32,10 +36,19 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 	private ApplicationProperties applicationProperties;
 
 	private String secret;
+	
+	private List<String> allowedAuthority;
 
 	@PostConstruct
 	public void init() {
 		this.secret = applicationProperties.getAuthSecretKey();
+		
+		allowedAuthority=new ArrayList<>();
+		allowedAuthority.add("ROLE_STUDENT");
+		allowedAuthority.add("ROLE_TEACHER");
+		allowedAuthority.add("ROLE_ADMIN");
+		allowedAuthority.add("ROLE_MANAGER");
+		
 	}
 
 	@Override
@@ -69,7 +82,14 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 			UserDetails userDetails = new org.springframework.security.core.userdetails.User(username, "",
 					new ArrayList<>());
 
-			if (Boolean.TRUE.equals(validateToken(jwt, userDetails.getUsername()))) {
+			// Retrieve the roles of the user, assuming you have a method to do this
+			List<GrantedAuthority> authorities = getAuthoritiesFromToken(jwt);
+
+			// Check if the user has the ROLE_STUDENT authority
+			boolean hasStudentRole = authorities.stream()
+					.anyMatch(grantedAuthority ->  allowedAuthority.contains(grantedAuthority.getAuthority()));
+
+			if (hasStudentRole && Boolean.TRUE.equals(validateToken(jwt, userDetails.getUsername()))) {
 
 				UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
 						userDetails, null, userDetails.getAuthorities());
@@ -92,6 +112,17 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
 	private Claims extractAllClaims(String token) {
 		return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
+	}
+
+	private List<GrantedAuthority> getAuthoritiesFromToken(String jwt) {
+		List<String> roles = extractRoles(jwt);
+		return roles.stream().map((String role) -> new SimpleGrantedAuthority(role))
+				.collect(Collectors.toList());
+	}
+
+	public List<String> extractRoles(String token) {
+		Claims claims = extractAllClaims(token);
+		return claims.get("roles", List.class);
 	}
 
 	private Boolean isTokenExpired(String token) {
