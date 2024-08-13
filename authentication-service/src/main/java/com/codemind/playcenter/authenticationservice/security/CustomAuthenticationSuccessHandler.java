@@ -8,12 +8,15 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
 import com.codemind.playcenter.authenticationservice.config.ApplicationProperties;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
@@ -36,7 +39,12 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
 			Authentication authentication) throws IOException, ServletException {
 
 		String username = authentication.getName();
-		String token = jwtUtil.generateToken(username);
+
+		// Extract roles from the Authentication object
+		List<String> roles = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority)
+				.collect(Collectors.toList());
+
+		String token = jwtUtil.generateToken(username,roles);
 
 		// Set JWT as a cookie
 		Cookie jwtCookie = new Cookie("JWT", token);
