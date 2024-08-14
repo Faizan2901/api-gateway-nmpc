@@ -33,8 +33,6 @@ public class SecurityConfig {
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http.authorizeHttpRequests(authorize -> authorize
-//				.requestMatchers("/nmpc-home/**", "/css/**", "/fonts/**", "/images/**", "/js/**", "/vendor/**")
-//				.permitAll()
 				.anyRequest().authenticated())
 				.exceptionHandling(exceptionHandling -> exceptionHandling
 						.authenticationEntryPoint(new Http403ForbiddenEntryPoint() {
