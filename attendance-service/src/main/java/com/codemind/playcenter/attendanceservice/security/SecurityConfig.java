@@ -40,7 +40,7 @@ public class SecurityConfig {
 							public void commence(HttpServletRequest request, HttpServletResponse response,
 									AuthenticationException authException) throws IOException {
 								response.sendRedirect(applicationProperties.getApiGatewayUrl()
-										+ "/authentication-service/play-center/");
+										+ "/error-service/error/error-page");
 							}
 						}))
 				.csrf().disable().addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
