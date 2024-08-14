@@ -34,6 +34,9 @@ public class ApiConfiguration {
                 .route(route -> route.path("/attendance-service/**")
                         .filters(f -> f.stripPrefix(1))
                         .uri("lb://attendance-service"))
+                .route(route -> route.path("/error-service/**")
+                        .filters(f -> f.stripPrefix(1))
+                        .uri("lb://error-service"))
                 .build();
     }
     
