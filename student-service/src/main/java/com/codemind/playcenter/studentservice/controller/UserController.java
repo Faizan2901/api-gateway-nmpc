@@ -59,6 +59,11 @@ public class UserController {
 
 		return userDAO.findAll();
 	}
+	
+	@GetMapping("/students")
+	public List<User> getStudentsForAttendance(){
+		return userDAO.findByEnabled(1);
+	}
 
 	@PostMapping("/user")
 	public void save(@RequestBody User webUser) {

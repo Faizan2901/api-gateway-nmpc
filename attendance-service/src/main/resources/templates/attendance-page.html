@@ -14,9 +14,11 @@
     <style>
         body {
             font-family: 'Arial', sans-serif;
-            background-color: #f9f9f9;
             margin: 0;
             padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
         .navbar {
             background-color: #ffffff;
@@ -29,7 +31,25 @@
         .nav-link:hover {
             color: #007bff !important;
         }
+        .btn-dashboard {
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 30px;
+            background-color: #007bff;
+            color: #fff !important;
+            font-size: 1em;
+            font-weight: bold;
+            transition: background-color 0.3s, transform 0.3s;
+            border: none;
+            text-decoration: none;
+        }
+        .btn-dashboard:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+            color: #fff !important; /* Keeps the text color the same */
+        }
         .content-section {
+            flex: 1;
             padding: 60px 0;
         }
         .section-title {
@@ -63,7 +83,7 @@
         .footer {
             background-color: #ffffff;
             color: #333;
-            padding: 20px 0;
+            padding: 10px 0;
             text-align: center;
             box-shadow: 0 -2px 4px rgba(0,0,0,0.1);
         }
@@ -79,7 +99,7 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
-                <li class="nav-item">
+                <!-- <li class="nav-item">
                     <a class="nav-link" href="#">About</a>
                 </li>
                 <li class="nav-item">
@@ -87,9 +107,9 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#">Contact</a>
-                </li>
+                </li> -->
                 <li class="nav-item">
-                    <a class="nav-link btn-login" href="#">Login</a>
+                    <a class="nav-link btn-dashboard" th:href="@{/dashboard-service/nmpc/dashboard-page}">Dashboard</a>
                 </li>
             </ul>
         </div>
@@ -104,28 +124,23 @@
                     <table class="table table-bordered table-hover">
                         <thead class="thead-light">
                             <tr>
-                                <th>Student ID</th>
                                 <th>Student Name</th>
                                 <th>Present</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>001</td>
-                                <td>Aarav Sharma</td>
-                                <td><input type="checkbox" name="attendance" value="001"></td>
-                            </tr>
-                            <tr>
-                                <td>002</td>
-                                <td>Saanvi Verma</td>
-                                <td><input type="checkbox" name="attendance" value="002"></td>
-                            </tr>
-                            <tr>
-                                <td>003</td>
-                                <td>Vihaan Gupta</td>
-                                <td><input type="checkbox" name="attendance" value="003"></td>
-                            </tr>
-                            <!-- Add more students as needed -->
+	                        <th:block th:each="student : ${allStudents}">
+	                            <tr>
+	                                <td><span th:text="${student.firstName}"></span>&nbsp;<span
+											th:text="${student.lastName}"></span>
+									</td>
+	                                <td>
+										<input type="checkbox" name="selectedItems"
+												th:value="${student.userName}"> <span
+												class="checkmark"></span>
+									</td>
+	                            </tr>
+	                        </th:block>
                         </tbody>
                     </table>
                 </div>

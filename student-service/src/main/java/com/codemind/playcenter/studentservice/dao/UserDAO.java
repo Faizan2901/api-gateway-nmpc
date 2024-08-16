@@ -12,7 +12,7 @@ public interface UserDAO extends JpaRepository<User, Integer> {
 
 	User findByUserName(String userName);
 
-//    List<Student> findByEnabled(int isStudent);
+    List<User> findByEnabled(int isStudent);
 //    
 //    Student findByResetPasswordToken(String token);
 //    
