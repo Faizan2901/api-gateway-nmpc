@@ -51,7 +51,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
 		jwtCookie.setHttpOnly(true);
 		jwtCookie.setSecure(true); // Ensure the cookie is only sent over HTTPS
 		jwtCookie.setPath("/"); // Set the path for the cookie
-		jwtCookie.setMaxAge(60 * 100); // Set the expiry to match the JWT's expiry time
+		jwtCookie.setMaxAge(60 * 60 * 24); // Set the expiry to match the JWT's expiry time
 
 		response.addCookie(jwtCookie);
 

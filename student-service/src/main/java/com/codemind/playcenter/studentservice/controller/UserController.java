@@ -43,6 +43,12 @@ public class UserController {
 		return userDAO.findByUserName(name);
 	}
 	
+	@GetMapping("/user-id")
+	public User getExististingUserById(@RequestParam("id") Integer id) {
+		System.out.println(id);
+		return userDAO.findById(id).get();
+	}
+		
 //	@GetMapping("/user/{name}")
 //	public User getUser(@PathVariable("name") String name) {
 //		System.out.println(name);
