@@ -115,9 +115,11 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
+            <th:block th:if="${allPresent}">
                 <li class="nav-item">
-                    <a class="nav-link btn-dashboard" th:href="@{/dashboard-service/nmpc/dashboard-page}">Dashboard</a>
+                    <a class="nav-link btn-dashboard" th:href="@{/attendance-service/attendance/attendance-page}">Attendance Bar</a>
                 </li>
+            </th:block>
             </ul>
         </div>
     </nav>
@@ -125,8 +127,9 @@
     <!-- Attendance Section -->
     <section class="content-section">
         <div class="container">
-            <h2 class="section-title">Student Attendance</h2>
+            <h2 class="section-title">Attended - Student List</h2>
             <h4 th:text="'Date: ' + ${todayDate}"></h4>
+            <h4 th:text="${fullPresent}"></h4>
            <!--   <form action="#" th:action="@{/attendance/fill-info}" method="post"> -->
                 <div class="table-responsive">
                     <table class="table table-bordered table-hover">

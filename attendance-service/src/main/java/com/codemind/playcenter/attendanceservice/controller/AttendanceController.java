@@ -4,6 +4,8 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -42,11 +44,28 @@ public class AttendanceController {
 	@GetMapping("/attendance-page")
 	public String getAttendancePage(Model model) {
 
+		LocalDate date = LocalDate.now();
+
+		List<StudentAttendance> tempStudentAttendance = studentAttendanceDAO.findByDate(date);
+
 		String username = defaultController.getAuthenticatedUserName();
 
-		List<Student> studentList = studentProxy.getStudentsForAttendance();
+		List<Student> allstudentList = studentProxy.getStudentsForAttendance();
 
-		model.addAttribute("allStudents", studentList);
+		if (!tempStudentAttendance.isEmpty()) {
+
+			List<Student> studentList = tempStudentAttendance.stream()
+					.map(a -> studentProxy.getExististingUserById(a.getStudentId())).collect(Collectors.toList());
+			allstudentList.removeIf(allStud -> studentList.stream().anyMatch(stud -> stud.getId() == allStud.getId()));
+			model.addAttribute("isAlreadyAttended", true);
+		}
+
+		if (allstudentList.isEmpty()) {
+			model.addAttribute("allPresent", true);
+			return "redirect:" + applicationProperties.getApiGatewayUrl()
+					+ "/attendance-service/attendance/attended-student";
+		}
+		model.addAttribute("allStudents", allstudentList);
 
 		System.out.println("Authenticated Username => " + username);
 
@@ -62,7 +81,7 @@ public class AttendanceController {
 
 		List<StudentAttendance> tempStudentAttendance = studentAttendanceDAO.findByDate(date);
 
-		if (selectedItems == null && tempStudentAttendance.isEmpty()) {
+		if (selectedItems == null && tempStudentAttendance.isEmpty() && selectedItems.size()==0) {
 			return "redirect:" + applicationProperties.getApiGatewayUrl()
 					+ "/attendance-service/attendance/attendance-page";
 		}
@@ -70,6 +89,11 @@ public class AttendanceController {
 		if (selectedItems != null) {
 			for (String selectString : selectedItems) {
 				Student student = studentProxy.getExististingUser(selectString);
+				StudentAttendance dbStoredStudentAttendance = studentAttendanceDAO
+						.findByStudentIdAndDate(student.getId(), date);
+				if (dbStoredStudentAttendance != null) {
+					continue;
+				}
 				StudentAttendance studentAttendance = new StudentAttendance();
 				studentAttendance.setStudentId(student.getId());
 				studentAttendance.setDate(Date.valueOf(date));
@@ -92,9 +116,16 @@ public class AttendanceController {
 
 		List<Student> allStudents = new ArrayList<>();
 
+		List<Student> totalStudents = studentProxy.getStudentsForAttendance();
+
 		for (StudentAttendance attendance : studentAttendance) {
 			Student student = studentProxy.getExististingUserById(attendance.getStudentId());
 			allStudents.add(student);
+		}
+		if (totalStudents.size() != allStudents.size()) {
+			model.addAttribute("allPresent", true);
+		} else if (totalStudents.size() == allStudents.size()) {
+			model.addAttribute("fullPresent", "Today, All Students are present.");
 		}
 
 		model.addAttribute("allStudents", allStudents);
@@ -112,11 +143,11 @@ public class AttendanceController {
 
 		StudentAttendance studentAttendance = studentAttendanceDAO.findByStudentIdAndDate(student.getId(), date);
 
-		studentAttendanceDAO.delete(studentAttendance);
+		studentAttendanceDAO.deleteById(studentAttendance.getId());
 
 		if (studentAttendanceDAO.findByDate(date).isEmpty()) {
 			return "redirect:" + applicationProperties.getApiGatewayUrl()
-					+ "/attendance-service/attendance/fill-attendance";
+			+ "/attendance-service/attendance/attendance-page";
 		}
 
 		return "redirect:" + applicationProperties.getApiGatewayUrl()
@@ -124,32 +155,32 @@ public class AttendanceController {
 
 	}
 
-	@GetMapping("/fill-attendance")
-	private String getAllStudentForAttendance(Model model) {
-
-		LocalDate date = LocalDate.now();
-
-		// All User who have Student Role
-		List<Student> studentList = studentProxy.getStudentsForAttendance();
-
-		List<Student> attendedStudents = new ArrayList<>();
-		List<Student> studentsNotDoneAttendance = new ArrayList<>();
-
-		for (Student student : studentList) {
-			StudentAttendance studentAttendance = studentAttendanceDAO.findByStudentIdAndDate(student.getId(), date);
-			if (studentAttendance != null) {
-				attendedStudents.add(student);
-			} else {
-				studentsNotDoneAttendance.add(student);
-			}
-		}
-
-		model.addAttribute("isDoneStudent", !attendedStudents.isEmpty());
-		model.addAttribute("attendanceDoneStudent", attendedStudents);
-		model.addAttribute("isNotDoneAttendance", !studentsNotDoneAttendance.isEmpty());
-		model.addAttribute("allStudents", studentsNotDoneAttendance);
-		model.addAttribute("todayDate", date);
-		return "/attendance-page";
-	}
+//	@GetMapping("/fill-attendance")
+//	private String getAllStudentForAttendance(Model model) {
+//
+//		LocalDate date = LocalDate.now();
+//
+//		// All User who have Student Role
+//		List<Student> studentList = studentProxy.getStudentsForAttendance();
+//
+//		List<Student> attendedStudents = new ArrayList<>();
+//		List<Student> studentsNotDoneAttendance = new ArrayList<>();
+//
+//		for (Student student : studentList) {
+//			StudentAttendance studentAttendance = studentAttendanceDAO.findByStudentIdAndDate(student.getId(), date);
+//			if (studentAttendance != null) {
+//				attendedStudents.add(student);
+//			} else {
+//				studentsNotDoneAttendance.add(student);
+//			}
+//		}
+//
+//		model.addAttribute("isDoneStudent", !attendedStudents.isEmpty());
+//		model.addAttribute("attendanceDoneStudent", attendedStudents);
+//		model.addAttribute("isNotDoneAttendance", !studentsNotDoneAttendance.isEmpty());
+//		model.addAttribute("allStudents", studentsNotDoneAttendance);
+//		model.addAttribute("todayDate", date);
+//		return "/attendance-page";
+//	}
 
 }

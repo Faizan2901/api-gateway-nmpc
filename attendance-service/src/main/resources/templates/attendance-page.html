@@ -108,6 +108,11 @@
                 <li class="nav-item">
                     <a class="nav-link" href="#">Contact</a>
                 </li> -->
+                <th:block th:if="${isAlreadyAttended}">
+        			<li class="nav-item">
+                    	<a class="nav-link btn-dashboard" th:href="@{/attendance-service/attendance//attended-student}">Review Attendance</a>&nbsp
+                	</li>
+        		</th:block>
                 <li class="nav-item">
                     <a class="nav-link btn-dashboard" th:href="@{/dashboard-service/nmpc/dashboard-page}">Dashboard</a>
                 </li>
@@ -145,7 +150,7 @@
                     </table>
                 </div>
                 <div class="text-center">
-                    <button type="submit" class="btn btn-submit">Submit Attendance</button>
+                    <button type="submit" class="btn btn-submit" id="submitAttendanceBtn">Submit Attendance</button>
                 </div>
             </form>
         </div>
@@ -162,6 +167,42 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+	    window.onpageshow = function(event) {
+	        if (event.persisted) {
+	            // Forces a hard reload of the page
+	            window.location.reload(true);
+	        }
+	    };
+	</script>
+	<script>
+	    document.getElementById('submitAttendanceBtn').onclick = function() {
+	        // Get all the checkboxes with the name 'selectedItems'
+	        var checkboxes = document.getElementsByName('selectedItems');
+	        var isAnyChecked = false;
+	
+	        // Loop through the checkboxes to see if any are checked
+	        for (var i = 0; i < checkboxes.length; i++) {
+	            if (checkboxes[i].checked) {
+	                isAnyChecked = true;
+	                break;
+	            }
+	        }
+	
+	        // If no checkboxes are checked, show an alert and prevent form submission
+	        if (!isAnyChecked) {
+	            alert('Please select at least one student.');
+	            return false;
+	        }
+	
+	        // If at least one checkbox is checked, confirm the submission
+	        if (confirm('Are you sure you want to submit the Attendance Sheet?')) {
+	            document.forms[0].submit();  // Submit the form
+	        }
+	    };
+	</script>
+	
+    
 
 </body>
 </html>
