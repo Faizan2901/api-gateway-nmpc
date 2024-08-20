@@ -61,8 +61,29 @@
         .table-responsive {
             margin-top: 30px;
         }
+        .table {
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .table thead th {
+            background-color: #f8f9fa;
+            color: #333;
+            text-align: center;
+        }
         .table th, .table td {
             vertical-align: middle;
+            text-align: center;
+            border-color: #dee2e6;
+        }
+        .table tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+        .table tbody td input[type="checkbox"] {
+            width: 13px;
+            height: 13px;
+            transform: scale(1.5);
+            margin: 0 auto;
         }
         .btn-submit {
             background-color: #28a745;
@@ -99,20 +120,11 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
-                <!-- <li class="nav-item">
-                    <a class="nav-link" href="#">About</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Announcements</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Contact</a>
-                </li> -->
                 <th:block th:if="${isAlreadyAttended}">
-        			<li class="nav-item">
-                    	<a class="nav-link btn-dashboard" th:href="@{/attendance-service/attendance//attended-student}">Review Attendance</a>&nbsp
-                	</li>
-        		</th:block>
+                    <li class="nav-item">
+                        <a class="nav-link btn-dashboard" th:href="@{/attendance-service/attendance//attended-student}">Review Attendance</a>&nbsp;
+                    </li>
+                </th:block>
                 <li class="nav-item">
                     <a class="nav-link btn-dashboard" th:href="@{/dashboard-service/nmpc/dashboard-page}">Dashboard</a>
                 </li>
@@ -134,18 +146,17 @@
                             </tr>
                         </thead>
                         <tbody>
-	                        <th:block th:each="student : ${allStudents}">
-	                            <tr>
-	                                <td><span th:text="${student.firstName}"></span>&nbsp;<span
-											th:text="${student.lastName}"></span>
-									</td>
-	                                <td>
-										<input type="checkbox" name="selectedItems"
-												th:value="${student.userName}"> <span
-												class="checkmark"></span>
-									</td>
-	                            </tr>
-	                        </th:block>
+                            <th:block th:each="student : ${allStudents}">
+                                <tr>
+                                    <td>
+                                        <span th:text="${student.firstName}"></span>&nbsp;
+                                        <span th:text="${student.lastName}"></span>
+                                    </td>
+                                    <td>
+                                        <input type="checkbox" name="selectedItems" th:value="${student.userName}">
+                                    </td>
+                                </tr>
+                            </th:block>
                         </tbody>
                     </table>
                 </div>
@@ -168,41 +179,33 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
-	    window.onpageshow = function(event) {
-	        if (event.persisted) {
-	            // Forces a hard reload of the page
-	            window.location.reload(true);
-	        }
-	    };
-	</script>
-	<script>
-	    document.getElementById('submitAttendanceBtn').onclick = function() {
-	        // Get all the checkboxes with the name 'selectedItems'
-	        var checkboxes = document.getElementsByName('selectedItems');
-	        var isAnyChecked = false;
-	
-	        // Loop through the checkboxes to see if any are checked
-	        for (var i = 0; i < checkboxes.length; i++) {
-	            if (checkboxes[i].checked) {
-	                isAnyChecked = true;
-	                break;
-	            }
-	        }
-	
-	        // If no checkboxes are checked, show an alert and prevent form submission
-	        if (!isAnyChecked) {
-	            alert('Please select at least one student.');
-	            return false;
-	        }
-	
-	        // If at least one checkbox is checked, confirm the submission
-	        if (confirm('Are you sure you want to submit the Attendance Sheet?')) {
-	            document.forms[0].submit();  // Submit the form
-	        }
-	    };
-	</script>
-	
-    
+        window.onpageshow = function(event) {
+            if (event.persisted) {
+                window.location.reload(true);
+            }
+        };
+    </script>
+    <script>
+        document.getElementById('submitAttendanceBtn').onclick = function() {
+            var checkboxes = document.getElementsByName('selectedItems');
+            var isAnyChecked = false;
 
+            for (var i = 0; i < checkboxes.length; i++) {
+                if (checkboxes[i].checked) {
+                    isAnyChecked = true;
+                    break;
+                }
+            }
+
+            if (!isAnyChecked) {
+                alert('Please select at least one student.');
+                return false;
+            }
+
+            if (confirm('Are you sure you want to submit the Attendance Sheet?')) {
+                document.forms[0].submit();
+            }
+        };
+    </script>
 </body>
 </html>

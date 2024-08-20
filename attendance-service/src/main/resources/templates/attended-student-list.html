@@ -19,10 +19,11 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            background-color: #f9f9f9;
         }
         .navbar {
             background-color: #ffffff;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
         }
         .navbar-brand, .nav-link {
             color: #333 !important;
@@ -33,20 +34,21 @@
         }
         .btn-dashboard {
             display: inline-block;
-            padding: 10px 20px;
-            border-radius: 30px;
+            padding: 12px 25px;
+            border-radius: 50px;
             background-color: #007bff;
             color: #fff !important;
-            font-size: 1em;
+            font-size: 1.1em;
             font-weight: bold;
             transition: background-color 0.3s, transform 0.3s;
             border: none;
             text-decoration: none;
+            box-shadow: 0 4px 8px rgba(0, 123, 255, 0.2);
         }
         .btn-dashboard:hover {
             background-color: #0056b3;
             transform: scale(1.05);
-            color: #fff !important; /* Keeps the text color the same */
+            color: #fff !important;
         }
         .content-section {
             flex: 1;
@@ -57,23 +59,32 @@
             margin-bottom: 40px;
             text-align: center;
             color: #333;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         .table-responsive {
             margin-top: 30px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .table {
+            margin-bottom: 0;
         }
         .table th, .table td {
             vertical-align: middle;
+            padding: 15px;
         }
         .btn-submit {
             background-color: #28a745;
             color: #fff !important;
             border: none;
-            padding: 10px 20px;
-            border-radius: 30px;
-            font-size: 1em;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-size: 1.1em;
             font-weight: bold;
             margin-top: 20px;
             transition: background-color 0.3s, transform 0.3s;
+            box-shadow: 0 4px 8px rgba(40, 167, 69, 0.2);
         }
         .btn-submit:hover {
             background-color: #218838;
@@ -84,12 +95,12 @@
             background-color: #dc3545;
             color: #fff !important;
             border: none;
-            padding: 5px 10px;
-            border-radius: 30px;
+            padding: 8px 15px;
+            border-radius: 50px;
             font-size: 0.9em;
             font-weight: bold;
-            margin-left: 10px;
             transition: background-color 0.3s, transform 0.3s;
+            box-shadow: 0 4px 8px rgba(220, 53, 69, 0.2);
         }
         .btn-delete:hover {
             background-color: #c82333;
@@ -99,9 +110,10 @@
         .footer {
             background-color: #ffffff;
             color: #333;
-            padding: 10px 0;
+            padding: 15px 0;
             text-align: center;
-            box-shadow: 0 -2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 -2px 6px rgba(0,0,0,0.1);
+            font-size: 0.9em;
         }
     </style>
 </head>
@@ -117,9 +129,12 @@
             <ul class="navbar-nav ml-auto">
             <th:block th:if="${allPresent}">
                 <li class="nav-item">
-                    <a class="nav-link btn-dashboard" th:href="@{/attendance-service/attendance/attendance-page}">Attendance Bar</a>
+                    <a class="nav-link btn-dashboard" th:href="@{/attendance-service/attendance/attendance-page}">Attendance Bar</a>&nbsp&nbsp
                 </li>
             </th:block>
+            <li class="nav-item">
+                    <a class="nav-link btn-dashboard" th:href="@{/dashboard-service/nmpc/dashboard-page}">Home</a>
+            </li>
             </ul>
         </div>
     </nav>
@@ -130,35 +145,30 @@
             <h2 class="section-title">Attended - Student List</h2>
             <h4 th:text="'Date: ' + ${todayDate}"></h4>
             <h4 th:text="${fullPresent}"></h4>
-           <!--   <form action="#" th:action="@{/attendance/fill-info}" method="post"> -->
-                <div class="table-responsive">
-                    <table class="table table-bordered table-hover">
-                        <thead class="thead-light">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Student Name</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <th:block th:each="student : ${allStudents}">
                             <tr>
-                                <th>Student Name</th>
-                                <th>Action</th>
+                                <td><span th:text="${student.firstName}"></span>&nbsp;<span th:text="${student.lastName}"></span></td>
+                                <td>
+                                    <a
+                                        th:href="@{/attendance-service/attendance/deleteUser(studentId=${student.id})}"
+                                        class="btn btn-delete"
+                                        onclick="return confirm('Are you sure you want to remove attendance of this student?')">
+                                    Remove</a>
+                                </td>
                             </tr>
-                        </thead>
-                        <tbody>
-	                        <th:block th:each="student : ${allStudents}">
-	                            <tr>
-	                                <td><span th:text="${student.firstName}"></span>&nbsp;<span th:text="${student.lastName}"></span></td>
-	                                <td>
-	                                	<a
-											th:href="@{/attendance-service/attendance/deleteUser(studentId=${student.id})}"
-											class="btn btn-danger btn-sm"
-											onclick="return confirm('Are you sure you want to remove attendance of this student?')">
-										Remove </a>    
-                                    </td>
-	                            </tr>
-	                        </th:block>
-                        </tbody>
-                    </table>
-                </div>
-              <!--   <div class="text-center">
-                    <button type="submit" class="btn btn-submit">Submit Attendance</button>
-                </div>
-            </form>  -->
+                        </th:block>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </section>
 
