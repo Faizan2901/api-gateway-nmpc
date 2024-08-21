@@ -81,7 +81,7 @@ public class AttendanceController {
 
 		List<StudentAttendance> tempStudentAttendance = studentAttendanceDAO.findByDate(date);
 
-		if (selectedItems == null && tempStudentAttendance.isEmpty() && selectedItems.size()==0) {
+		if (selectedItems == null && tempStudentAttendance.isEmpty() && selectedItems.size() == 0) {
 			return "redirect:" + applicationProperties.getApiGatewayUrl()
 					+ "/attendance-service/attendance/attendance-page";
 		}
@@ -147,40 +147,12 @@ public class AttendanceController {
 
 		if (studentAttendanceDAO.findByDate(date).isEmpty()) {
 			return "redirect:" + applicationProperties.getApiGatewayUrl()
-			+ "/attendance-service/attendance/attendance-page";
+					+ "/attendance-service/attendance/attendance-page";
 		}
 
 		return "redirect:" + applicationProperties.getApiGatewayUrl()
 				+ "/attendance-service/attendance/attended-student";
 
 	}
-
-//	@GetMapping("/fill-attendance")
-//	private String getAllStudentForAttendance(Model model) {
-//
-//		LocalDate date = LocalDate.now();
-//
-//		// All User who have Student Role
-//		List<Student> studentList = studentProxy.getStudentsForAttendance();
-//
-//		List<Student> attendedStudents = new ArrayList<>();
-//		List<Student> studentsNotDoneAttendance = new ArrayList<>();
-//
-//		for (Student student : studentList) {
-//			StudentAttendance studentAttendance = studentAttendanceDAO.findByStudentIdAndDate(student.getId(), date);
-//			if (studentAttendance != null) {
-//				attendedStudents.add(student);
-//			} else {
-//				studentsNotDoneAttendance.add(student);
-//			}
-//		}
-//
-//		model.addAttribute("isDoneStudent", !attendedStudents.isEmpty());
-//		model.addAttribute("attendanceDoneStudent", attendedStudents);
-//		model.addAttribute("isNotDoneAttendance", !studentsNotDoneAttendance.isEmpty());
-//		model.addAttribute("allStudents", studentsNotDoneAttendance);
-//		model.addAttribute("todayDate", date);
-//		return "/attendance-page";
-//	}
 
 }
