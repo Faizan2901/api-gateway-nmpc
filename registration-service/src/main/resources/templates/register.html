@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <style>
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
             background-color: #f9f9f9;
             margin: 0;
             padding: 0;
@@ -30,7 +30,7 @@
             position: absolute;
             width: 200%;
             height: 200%;
-            background: linear-gradient(45deg, #ff9a9e, #fad0c4, #fad0c4, #ff9a9e);
+            background: linear-gradient(45deg, #f9f9f9, #e0e0e0, #f9f9f9, #e0e0e0);
             background-size: 400% 400%;
             animation: gradientBG 10s ease infinite;
             z-index: -1;
@@ -46,16 +46,17 @@
         /* Registration container styling */
         .registration-container {
             background-color: rgba(255, 255, 255, 0.9);
-            padding: 100px;
-            border-radius: 15px;
+            padding: 50px;
+            border-radius: 25px;
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
             max-width: 800px;
             width: 100%;
             text-align: center;
+            position: relative;
         }
 
         .registration-title {
-            font-size: 2em;
+            font-size: 2.5em;
             margin-bottom: 20px;
             color: #6482AD;
             font-weight: bold;
@@ -65,36 +66,56 @@
             margin-bottom: 20px;
             border-radius: 50px;
             padding: 15px;
-            font-size: 1em;
+            font-size: 1.2em;
             background-color: #f1f1f1;
             border: none;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
+        .registration-form .form-control:focus {
+            border: 2px;
+            box-shadow: 0 4px 10px rgba(0,0,0, 0.3);
+        }
+
         .registration-form .btn-register {
-            background-color: #007bff;
+            background-color: #6482AD;
             color: #fff;
             padding: 12px 20px;
             border-radius: 50px;
             width: 100%;
-            font-size: 1.2em;
+            font-size: 1.5em;
             transition: background-color 0.3s, box-shadow 0.3s;
             border: none;
+            animation: bounce 2s infinite;
         }
 
-        .registration-form .btn-register:hover {
-            background-color: #0056b3;
-            box-shadow: 0 4px 10px rgba(0, 91, 187, 0.5);
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-15px);
+            }
+            60% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .registration-form .btn-register:hover 
+        {
+            background-color: #6482AD;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5); /* Light black shadow */
         }
 
         .text-center a {
-            color: #007bff;
+            color: #6482AD;
             text-decoration: none;
-            transition: color 0.3s;
+            transition: color 0.3s ease, text-shadow 0.3s ease;
         }
 
         .text-center a:hover {
-            color: #0056b3;
+            color: #6482AD;
+            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3); /* Light black shadow */
         }
 
         .alert {
@@ -110,6 +131,16 @@
 
         .form-group {
             flex: 0 0 48%;
+        }
+
+        .anime-image {
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            width: 110px;
+            height: auto;
+            z-index: 1;
+            border-radius: 100px;
         }
     </style>
 </head>
@@ -156,6 +187,9 @@
         <div class="text-center mt-3">
             <a href="/authentication-service/play-center/">Already have an account? Login</a>
         </div>
+
+        <!-- Anime Image -->
+        <img th:src="@{/registration-service/images/child-image.png}" alt="Child Anime" class="anime-image">
     </div>
 
     <!-- Bootstrap JS and dependencies -->
