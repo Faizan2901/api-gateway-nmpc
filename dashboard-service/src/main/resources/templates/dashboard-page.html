@@ -9,12 +9,14 @@
     <meta http-equiv="Expires" content="0"/>
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <!-- Custom CSS -->
+    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+Chettan+2:wght@500&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f9f9f9;
+            font-family: 'Baloo Chettan 2', cursive;
+            background-color: #fff0f5;
             margin: 0;
             padding: 0;
         }
@@ -29,8 +31,14 @@
         .nav-link:hover {
             color: #007bff !important;
         }
+        .nav-link i {
+            transition: transform 0.2s;
+        }
+        .nav-link:hover i {
+            transform: rotate(20deg) translateY(-3px);
+        }
         .hero-section {
-            background: url('https://source.unsplash.com/1600x900/?kids,school') no-repeat center center;
+            background: url('https://source.unsplash.com/1600x900/?kids,school') no-repeat center center fixed;
             background-size: cover;
             color: #333;
             padding: 120px 0;
@@ -39,9 +47,21 @@
         .hero-section h1 {
             font-size: 4em;
             margin-bottom: 20px;
+            transition: color 0.3s, text-shadow 0.3s;
+        }
+        .hero-section h1:hover {
+            color: #ff1493;
+            cursor: pointer;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
         }
         .hero-section p {
             font-size: 1.5em;
+            transition: color 0.3s, text-shadow 0.3s;
+        }
+        .hero-section p:hover {
+            color: #32cd32;
+            cursor: pointer;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
         }
         .btn-explore {
             background-color: #007bff;
@@ -49,17 +69,17 @@
             padding: 15px 30px;
             border-radius: 50px;
             font-size: 1.2em;
-            transition: background-color 0.3s;
+            transition: transform 0.3s, background-color 0.3s;
         }
         .btn-explore:hover {
             background-color: #0056b3;
-            color: #fff;
+            transform: scale(1.1);
         }
         .section-title {
             font-size: 2.5em;
             margin-bottom: 40px;
             text-align: center;
-            color: #333;
+            color: #ff6347;
         }
         .section {
             padding: 60px 0;
@@ -69,9 +89,22 @@
         }
         .announcements-section {
             background-color: #ffffff;
+            animation: slideIn 2s ease-out;
+        }
+        @keyframes slideIn {
+            from {
+                transform: translateX(-100%);
+            }
+            to {
+                transform: translateX(0);
+            }
         }
         .attendance-section {
             background-color: #f1f1f1;
+        }
+        .attendance-section progress {
+            width: 100%;
+            height: 20px;
         }
         .dashboard-section {
             background-color: #e9ecef;
@@ -112,6 +145,13 @@
         .btn-logout i {
             margin-right: 5px;
         }
+        .mascot {
+            width: 150px;
+            transition: transform 0.3s;
+        }
+        .mascot:hover {
+            transform: scale(1.1) rotate(5deg);
+        }
     </style>
 </head>
 <body>
@@ -125,38 +165,37 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item active">
-                    <a class="nav-link" href="#">Home</a>
+                    <a class="nav-link" href="#">Home <i class="fas fa-home"></i></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">About</a>
+                    <a class="nav-link" href="#">About <i class="fas fa-info-circle"></i></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Explore</a>
+                    <a class="nav-link" href="#">Explore <i class="fas fa-compass"></i></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Announcements</a>
+                    <a class="nav-link" href="#">Announcements <i class="fas fa-bullhorn"></i></a>
                 </li>
                 <th:block th:if="${isStudent}">
                 	<li class="nav-item">
-                    	<a class="nav-link" href="#">Student Dashboard</a>
+                    	<a class="nav-link" href="#">Student Dashboard <i class="fas fa-user-graduate"></i></a>
                 	</li>
                 </th:block>
                 <th:block th:if="${isManager}">
                 	<li class="nav-item">
-                    	<a class="nav-link" href="#">User Management</a>
+                    	<a class="nav-link" href="#">User Management <i class="fas fa-users-cog"></i></a>
                 	</li>
                 </th:block>
                 <th:block th:if="${isTeacher}">
 	                <li class="nav-item">
-	                    <a class="nav-link" th:href="@{/attendance-service/attendance/attendance-page}">Attendance-Bar</a>
+	                    <a class="nav-link" th:href="@{/attendance-service/attendance/attendance-page}">Attendance-Bar <i class="fas fa-chart-bar"></i></a>
 	                </li>
 	                <li class="nav-item">
-	                    <a class="nav-link" th:href="@{/attendance-service/attendance/attendance-page}">Attendance-Statistics</a>
+	                    <a class="nav-link" th:href="@{/attendance-service/attendance/attendance-page}">Attendance-Statistics <i class="fas fa-chart-pie"></i></a>
 	                </li>
                	</th:block>
                 <li class="nav-item">
                     <form th:action="@{/authentication-service/play-center/logout}" method="post">
-                        <!-- <input type="hidden" th:name="${csrfToken.parameterName}" th:value="${csrfToken.token}" /> -->
                         <button class="nav-link btn-logout" type="submit"><i class="fas fa-sign-out-alt"></i>Logout</button>
                     </form>
                 </li>
@@ -188,16 +227,17 @@
             <ul>
                 <li>New term starts on September 1st.</li>
                 <li>Summer camp registration is now open.</li>
-                <li>Parents-teachers meeting on August 15th.</li>
+                <li>Annual Sports Day will be held on October 15th.</li>
             </ul>
         </div>
     </section>
 
-    <!-- Student Attendance Section -->
+    <!-- Attendance Section -->
     <section class="section attendance-section">
         <div class="container">
             <h2 class="section-title">Student Attendance</h2>
-            <p>Check the latest attendance records and ensure your child’s presence in the class. Regular attendance is crucial for continuous learning and development.</p>
+            <p>Attendance Progress: 85%</p>
+            <progress value="85" max="100"></progress>
         </div>
     </section>
 
@@ -205,21 +245,73 @@
     <section class="section dashboard-section">
         <div class="container">
             <h2 class="section-title">Student Dashboard</h2>
-            <p>Access your child’s progress, assignments, and more through the student dashboard. Stay updated with their learning journey and milestones.</p>
+            <p>Access your study materials, assignments, and track your progress through the dashboard.</p>
+            <a href="#" class="btn btn-explore">Go to Dashboard</a>
         </div>
     </section>
 
-    <!-- Footer -->
+    <!-- Quiz Section -->
+    <section class="section quiz-section">
+        <div class="container">
+            <h2 class="section-title">Fun Quiz</h2>
+            <p>What is 2 + 2?</p>
+            <button onclick="checkAnswer(4)">4</button>
+            <button onclick="checkAnswer(3)">3</button>
+            <p id="quiz-result"></p>
+        </div>
+    </section>
+
+    <!-- Mascot Section -->
+    <section class="section mascot-section">
+        <div class="container">
+            <h2 class="section-title">Meet Our Mascot!</h2>
+            <img src="path/to/mascot.png" alt="Mascot" class="mascot" />
+            <p>Hi! I’m your friendly guide. Hover over me to learn more!</p>
+        </div>
+    </section>
+
+    <!-- Footer with Game -->
     <footer class="footer">
         <div class="container">
             <p>&copy; 2024 Nanhe Munhe Play Center. All rights reserved.</p>
+            <p>Click the star to win a prize! ⭐</p>
+            <button onclick="winPrize()">Star ⭐</button>
+            <p id="prize-result"></p>
         </div>
     </footer>
 
-    <!-- Bootstrap JS and dependencies -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- Background Music -->
+    <audio id="bg-music" loop>
+        <source src="path/to/your/background-music.mp3" type="audio/mpeg">
+    </audio>
+
+    <button onclick="toggleMusic()">Play Music</button>
+
+    <script>
+        function toggleMusic() {
+            const music = document.getElementById('bg-music');
+            if (music.paused) {
+                music.play();
+            } else {
+                music.pause();
+            }
+        }
+
+        function checkAnswer(answer) {
+            const result = document.getElementById('quiz-result');
+            if (answer === 4) {
+                result.textContent = "Correct! 🎉";
+                result.style.color = 'green';
+            } else {
+                result.textContent = "Oops! Try Again. 😅";
+                result.style.color = 'red';
+            }
+        }
+
+        function winPrize() {
+            document.getElementById('prize-result').textContent = "Congratulations! You've won a virtual sticker! 🌟";
+        }
+    </script>
 
 </body>
 </html>
