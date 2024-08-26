@@ -136,12 +136,24 @@
                 <li class="nav-item">
                     <a class="nav-link" href="#">Announcements</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Student Dashboard</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" th:href="@{/attendance-service/attendance/attendance-page}">Attendance</a>
-                </li>
+                <th:block th:if="${isStudent}">
+                	<li class="nav-item">
+                    	<a class="nav-link" href="#">Student Dashboard</a>
+                	</li>
+                </th:block>
+                <th:block th:if="${isManager}">
+                	<li class="nav-item">
+                    	<a class="nav-link" href="#">User Management</a>
+                	</li>
+                </th:block>
+                <th:block th:if="${isTeacher}">
+	                <li class="nav-item">
+	                    <a class="nav-link" th:href="@{/attendance-service/attendance/attendance-page}">Attendance-Bar</a>
+	                </li>
+	                <li class="nav-item">
+	                    <a class="nav-link" th:href="@{/attendance-service/attendance/attendance-page}">Attendance-Statistics</a>
+	                </li>
+               	</th:block>
                 <li class="nav-item">
                     <form th:action="@{/authentication-service/play-center/logout}" method="post">
                         <!-- <input type="hidden" th:name="${csrfToken.parameterName}" th:value="${csrfToken.token}" /> -->

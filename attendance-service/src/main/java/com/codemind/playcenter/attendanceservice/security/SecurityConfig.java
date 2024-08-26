@@ -41,7 +41,7 @@ public class SecurityConfig {
 	        .exceptionHandling(exceptionHandling -> exceptionHandling
 	            .authenticationEntryPoint((request, response, authException) -> {
 	                // Check if the exception is JwtExpiredException
-	                if (authException.getCause() instanceof JwtExpiredException) {
+	                if (authException.getCause() instanceof io.jsonwebtoken.ExpiredJwtException) {
 	                    // Handle JwtExpiredException specifically
 //	                    System.out.println(authException.getCause().getMessage());
 	                    response.sendRedirect(applicationProperties.getApiGatewayUrl() + "/authentication-service/play-center/");
