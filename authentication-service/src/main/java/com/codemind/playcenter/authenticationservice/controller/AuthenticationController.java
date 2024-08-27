@@ -1,6 +1,7 @@
 package com.codemind.playcenter.authenticationservice.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
@@ -24,15 +25,28 @@ public class AuthenticationController {
 
 	@Autowired
 	UserProxy proxy;
-	
+
 	@Autowired
 	ApplicationProperties applicationProperties;
-	
-	
+
 	SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
 
 	@GetMapping("/")
-	public String getLoginPage() {
+	public String getLoginPage(HttpServletRequest request) {
+		// Check if the user is already authenticated
+//		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//
+//		if (authentication != null && authentication.isAuthenticated()
+//				&& !(authentication instanceof AnonymousAuthenticationToken)) {
+//			// Prevent redirect loop by checking the request URL
+//			String requestUri = request.getRequestURI();
+//			if (requestUri.equals("/play-center/")) {
+//				return "redirect:" + applicationProperties.getApiGatewayUrl()
+//						+ "/dashboard-service/nmpc/dashboard-page";
+//			}
+//		}
+
+		// If not authenticated, show the login page
 		return "/login-page";
 	}
 
@@ -45,25 +59,24 @@ public class AuthenticationController {
 
 	@PostMapping("/logout")
 	public String performLogout(HttpServletRequest request, HttpServletResponse response) {
-	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-	    if (authentication != null) {
-	        System.out.println(authentication.getName());
-	        this.logoutHandler.logout(request, response, authentication);
-	    } else {
-	        System.out.println("Authentication is null");
-	    }
-	    // Invalidate the session to ensure all session data is cleared
-	    request.getSession().invalidate();
-	    
-	    // Clear the JWT cookie
-	    Cookie jwtCookie = new Cookie("JWT", null);
-	    jwtCookie.setHttpOnly(true);
-	    jwtCookie.setMaxAge(0);  // Expire the cookie immediately
-	    jwtCookie.setPath("/");  // Match the original path of the cookie
-	    response.addCookie(jwtCookie);
-	    
-	    return "redirect:" + applicationProperties.getApiGatewayUrl() + "/authentication-service/play-center/";
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		if (authentication != null) {
+			System.out.println(authentication.getName());
+			this.logoutHandler.logout(request, response, authentication);
+		} else {
+			System.out.println("Authentication is null");
+		}
+		// Invalidate the session to ensure all session data is cleared
+		request.getSession().invalidate();
+
+		// Clear the JWT cookie
+		Cookie jwtCookie = new Cookie("JWT", null);
+		jwtCookie.setHttpOnly(true);
+		jwtCookie.setMaxAge(0); // Expire the cookie immediately
+		jwtCookie.setPath("/"); // Match the original path of the cookie
+		response.addCookie(jwtCookie);
+
+		return "redirect:" + applicationProperties.getApiGatewayUrl() + "/authentication-service/play-center/";
 	}
 
-	
 }
