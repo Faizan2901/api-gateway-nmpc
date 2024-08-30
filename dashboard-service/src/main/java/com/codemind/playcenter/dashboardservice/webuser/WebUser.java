@@ -71,8 +71,10 @@ public class WebUser {
 
 	@Override
 	public String toString() {
-		return "Authenticate WebUser ==> [username=" + userName + ", firstName=" + firstName + ", middleName="
-				+ middleName + ", lastName=" + lastName + ", email=" + email + ", mobileNo=" + mobileNo + "]";
+		return "WebUser [userName=" + userName + ", firstName=" + firstName + ", middleName=" + middleName
+				+ ", lastName=" + lastName + ", email=" + email + ", mobileNo=" + mobileNo + ", roles=" + roles + "]";
 	}
+
+	
 
 }

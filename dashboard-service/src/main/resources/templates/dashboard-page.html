@@ -183,7 +183,7 @@
                 </th:block>
                 <th:block th:if="${isManager}">
                 	<li class="nav-item">
-                    	<a class="nav-link" href="#">User Management <i class="fas fa-users-cog"></i></a>
+                    	<a class="nav-link" th:href="@{/dashboard-service/user-management/users}">User Management <i class="fas fa-users-cog"></i></a>
                 	</li>
                 </th:block>
                 <th:block th:if="${isTeacher}">

@@ -42,13 +42,13 @@ public class UserController {
 		System.out.println(name);
 		return userDAO.findByUserName(name);
 	}
-	
+
 	@GetMapping("/user-id")
 	public User getExististingUserById(@RequestParam("id") Integer id) {
 		System.out.println(id);
 		return userDAO.findById(id).get();
 	}
-		
+
 //	@GetMapping("/user/{name}")
 //	public User getUser(@PathVariable("name") String name) {
 //		System.out.println(name);
@@ -65,10 +65,15 @@ public class UserController {
 
 		return userDAO.findAll();
 	}
-	
+
 	@GetMapping("/students")
-	public List<User> getStudentsForAttendance(){
+	public List<User> getStudentsForAttendance() {
 		return userDAO.findByEnabled(1);
+	}
+
+	@GetMapping("/user-list")
+	public List<User> getUserForManagement(@RequestParam("id") int id) {
+		return userDAO.findByEnabled(id);
 	}
 
 	@PostMapping("/user")
