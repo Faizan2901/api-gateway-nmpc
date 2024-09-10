@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Assign Role - Nanhe Munhe Play Center</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Bootstrap CSS -->
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<!-- Custom CSS -->
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+<style>
+body {
+	font-family: 'Arial', sans-serif;
+	margin: 0;
+	padding: 0;
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+}
+
+.navbar {
+	background-color: #343a40;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.navbar-brand {
+	color: #ffffff !important;
+	font-weight: bold;
+}
+
+.navbar-brand:hover {
+	color: #f8f9fa !important;
+}
+
+.nav-link {
+	color: #ffffff !important;
+	font-weight: bold;
+}
+
+.nav-link:hover {
+	color: #17a2b8 !important;
+}
+
+.btn-dashboard {
+	display: inline-block;
+	padding: 10px 20px;
+	border-radius: 30px;
+	background-color: #17a2b8;
+	color: #fff !important;
+	font-size: 1em;
+	font-weight: bold;
+	transition: background-color 0.3s, transform 0.3s;
+	border: none;
+	text-decoration: none;
+}
+
+.btn-dashboard:hover {
+	background-color: #138496;
+	transform: scale(1.05);
+	color: #fff !important;
+}
+
+.content-section {
+	flex: 1;
+	padding: 60px 0;
+	background-color: #f8f9fa;
+}
+
+.container {
+	max-width: 600px;
+	margin: auto;
+	background-color: white;
+	padding: 20px;
+	border-radius: 10px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+	color: #17a2b8;
+	font-weight: bold;
+	text-align: center;
+	margin-bottom: 30px;
+}
+
+.btn-save {
+	background-color: #17a2b8;
+	color: white;
+	font-weight: bold;
+	transition: background-color 0.3s;
+	width: 100%;
+	padding: 10px;
+	border-radius: 30px;
+}
+
+.btn-save:hover {
+	background-color: #138496;
+}
+
+.role-badge {
+	background-color: #28a745;
+	color: white;
+	border-radius: 12px;
+	padding: 5px 10px;
+	font-size: 14px;
+	margin: 5px;
+	display: inline-block;
+}
+
+.role-list {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+}
+
+.no-role-msg {
+	color: #dc3545;
+	font-weight: bold;
+}
+
+.form-group select {
+	border: 2px solid #17a2b8;
+	border-radius: 8px;
+}
+
+.footer {
+	background-color: #343a40;
+	color: #ffffff;
+	padding: 15px 0;
+	text-align: center;
+	box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.2);
+}
+</style>
+</head>
+<body>
+
+	<!-- Navbar -->
+	<nav class="navbar navbar-expand-lg">
+		<a class="navbar-brand" href="#">Nanhe Munhe Play Center</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse"
+			data-target="#navbarNav" aria-controls="navbarNav"
+			aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse" id="navbarNav">
+			<ul class="navbar-nav ml-auto">
+				<li class="nav-item"><a class="nav-link btn-dashboard"
+					th:href="@{/dashboard-service/user-management/users}">User Management</a></li>
+			</ul>
+		</div>
+	</nav>
+
+	<!-- Content Section -->
+	<section class="content-section">
+		<div class="container">
+			<h2>Assign Role</h2>
+			<form method="post" th:action="@{/dashboard-service/nmpc/save-role}">
+				<div class="form-group">
+					<label for="userName">User Name</label> <input type="text"
+						id="userName" name="userName" class="form-control"
+						th:value="${userName}" readonly>
+				</div>
+				<div class="form-group">
+					<label for="assignedRoles">Assigned Roles</label>
+					<div class="role-list">
+						<span class="role-badge" th:each="role : ${assignedRoles}"
+							th:text="${role.roleDescription}"></span>
+					</div>
+				</div>
+
+				<th:block th:if="${noRole}">
+					<p class="no-role-msg">No available roles to assign.</p>
+				</th:block>
+				<th:block th:unless="${noRole}">
+					<div class="form-group">
+						<label for="newRole">Assign New Role</label> <select id="newRole"
+							name="newRole" class="form-control">
+							<option th:each="role : ${availableRoles}"
+								th:value="${role.roleDescription}"
+								th:text="${role.roleDescription}"></option>
+						</select>
+					</div>
+				</th:block>
+
+				<button type="submit" class="btn btn-save">Save</button>
+			</form>
+		</div>
+	</section>
+
+	<!-- Footer -->
+	<footer class="footer">
+			<p>&copy; 2024 Nanhe Munhe Play Center. All rights reserved.</p>
+	</footer>
+
+	<!-- Bootstrap JS -->
+	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+	<script
+		src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

@@ -159,9 +159,13 @@
                                     </ul>
                                 </td>
                                 <td>
-                                    <button class="btn-role" th:attr="data-userName=${user.userName}" onclick="assignRole(this.getAttribute('data-userName'))">Assign Role</button>
-                                    <button class="btn-role" th:attr="data-userName=${user.userName}" onclick="deleteUser(this.getAttribute('data-userName'))">Delete User</button>
-                                </td>
+								    <form th:action="@{/dashboard-service/nmpc/assign-role}" method="get" style="display:inline;">
+								        <input type="hidden" th:name="userName" th:value="${user.userName}">
+								        <button type="submit" class="btn-role">Assign Role</button>
+								    </form>
+								    <button class="btn-role" th:attr="data-userName=${user.userName}" onclick="deleteUser(this.getAttribute('data-userName'))">Delete User</button>
+								</td>
+
                             </tr>
                         </th:block>
                     </tbody>
@@ -182,17 +186,9 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
-        function assignRole(userName) {
-            alert('Assigning role to: ' + userName);
-            // Add your logic to assign a role to the user here
-        }
-
-        function removeUser(userName) {
-            if (confirm('Are you sure you want to remove the user: ' + userName + '?')) {
-                alert('Removing user: ' + userName);
-                // Add your logic to remove the user here
-            }
-        }
+	    function assignRole(userName) {
+	        window.location.href = 'http://localhost:8765/dashboard-service/nmpc/assign-role?userName=' + userName;
+	    }
 
         function deleteUser(userName) {
             if (confirm('Are you sure you want to delete the user: ' + userName + '?')) {

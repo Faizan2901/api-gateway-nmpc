@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.codemind.playcenter.dashboardservice.webuser.Role;
 import com.codemind.playcenter.dashboardservice.webuser.WebUser;
 
 
@@ -18,6 +19,9 @@ public interface UserProxy {
 	
 	@GetMapping("/users/user-list")
 	public List<WebUser> getUserForManagement(@RequestParam("id") int id);
+	
+	@GetMapping("/role/allRole")
+	public List<Role> getAllRole();
 	
 	
 
