@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.codemind.playcenter.studentservice.dao.RoleDAO;
@@ -21,6 +22,13 @@ public class RoleController {
 	public List<Role> getAllRole() {
 
 		return roleDAO.findAll();
+
+	}
+
+	@GetMapping("/role-id")
+	public Role getRoleById(@RequestParam("id") Integer id) {
+
+		return roleDAO.findById(id).get();
 
 	}
 

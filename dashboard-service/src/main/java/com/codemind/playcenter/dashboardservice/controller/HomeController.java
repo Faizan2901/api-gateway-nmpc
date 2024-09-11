@@ -85,7 +85,25 @@ public class HomeController {
 	public String saveRoleAssignment(@RequestParam("userName") String userName,
 			@RequestParam("newRole") String newRole) {
 
-		System.out.println(userName + " " + newRole);
+		logger.info("Newly role [{}] assigned to this User Name :-> {}", newRole, userName);
+		WebUser user = proxy.getUser(userName);
+		List<Role> assignedRoles = user.getRoles();
+		Role role = proxy.getRoleById(Integer.parseInt(newRole));
+		assignedRoles.add(role);
+		user.setRoles(assignedRoles);
+
+		proxy.updateUser(user);
+
+		logger.info("Newly role [{}] assigned to this User Name :-> {}", role.getRoleDescription(), userName);
+
+		return "redirect:" + applicationProperties.getApiGatewayUrl() + "/dashboard-service/nmpc/assign-role?userName="
+				+ userName;
+	}
+
+	@GetMapping("/delete-role")
+	public String deleteRole(@RequestParam("userName") String userName, @RequestParam("role") String role) {
+
+		logger.info("Delete role [{}] for this User Name :-> {}", role, userName);
 
 		return "redirect:" + applicationProperties.getApiGatewayUrl() + "/dashboard-service/nmpc/assign-role?userName="
 				+ userName;
