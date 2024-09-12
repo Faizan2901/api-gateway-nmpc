@@ -88,6 +88,10 @@ public class HomeController {
 		WebUser user = proxy.getUser(userName);
 		List<Role> assignedRoles = user.getRoles();
 		Role role = proxy.getRoleById(Integer.parseInt(newRole));
+		if (role.getRoleDescription().equals("ROLE_MANAGER") || role.getRoleDescription().equals("ROLE_STUDENT")
+				|| role.getRoleDescription().equals("ROLE_TEACHER")) {
+			user.setEnabled(0);
+		}
 		assignedRoles.add(role);
 		user.setRoles(assignedRoles);
 
@@ -101,11 +105,15 @@ public class HomeController {
 
 	@GetMapping("/delete-role")
 	public String deleteRole(@RequestParam("userName") String userName, @RequestParam("role") String roleId) {
-		
+
 		WebUser user = proxy.getUser(userName);
 		List<Role> assignedRoles = user.getRoles();
 		Role role = proxy.getRoleById(Integer.parseInt(roleId));
 		assignedRoles.remove(role);
+		if (role.getRoleDescription().equals("ROLE_MANAGER") || role.getRoleDescription().equals("ROLE_STUDENT")
+				|| role.getRoleDescription().equals("ROLE_TEACHER")) {
+			user.setEnabled(1);
+		}
 		user.setRoles(assignedRoles);
 
 		proxy.updateUser(user);

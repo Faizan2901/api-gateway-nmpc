@@ -109,6 +109,7 @@ public class UserController {
 
 		User user = userDAO.findByUserName(webUser.getUserName());
 		user.setRoles(webUser.getRoles());
+		user.setEnabled(webUser.getEnabled());
 		User updateUser=userDAO.save(user);
 		
 		logger.info("Username is upadated => {}",updateUser.getUserName());

@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.codemind.playcenter.dashboardservice.proxy.UserProxy;
-import com.codemind.playcenter.dashboardservice.webuser.Role;
 import com.codemind.playcenter.dashboardservice.webuser.WebUser;
 
 @Controller

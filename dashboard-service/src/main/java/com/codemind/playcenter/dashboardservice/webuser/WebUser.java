@@ -10,6 +10,7 @@ public class WebUser {
 	private String lastName;
 	private String email;
 	private String mobileNo;
+	private int enabled;
 
 	private List<Role> roles;
 
@@ -69,12 +70,18 @@ public class WebUser {
 		this.mobileNo = mobileNo;
 	}
 
+	public int getEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(int enabled) {
+		this.enabled = enabled;
+	}
+
 	@Override
 	public String toString() {
 		return "WebUser [userName=" + userName + ", firstName=" + firstName + ", middleName=" + middleName
 				+ ", lastName=" + lastName + ", email=" + email + ", mobileNo=" + mobileNo + ", roles=" + roles + "]";
 	}
-
-	
 
 }
