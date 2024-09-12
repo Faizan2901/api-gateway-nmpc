@@ -156,42 +156,40 @@ h2 {
 	<section class="content-section">
 		<div class="container">
 			<h2>Assign Role</h2>
-			<form method="post" th:action="@{/dashboard-service/nmpc/save-role}">
+			<form id="assignRoleForm" method="post" th:action="@{/dashboard-service/nmpc/save-role}">
 				<div class="form-group">
-					<label for="userName">User Name</label> <input type="text"
-						id="userName" name="userName" class="form-control"
-						th:value="${userName}" readonly>
+					<label for="userName">User Name</label> 
+					<input type="text" id="userName" name="userName" class="form-control" th:value="${userName}" readonly>
 				</div>
+				
 				<div class="form-group">
 					<label for="assignedRoles">Assigned Roles</label>
 					<div class="role-list">
 						<th:block th:each="role : ${assignedRoles}">
-							<span class="role-badge"> <span
-								th:text="${role.roleDescription}"></span> <!-- Cross sign for deleting a role -->
-								<a
-								th:href="@{/dashboard-service/nmpc/delete-role(userName=${userName}, role=${role.id})}"
-								class="text-danger ml-2"> <i class="fas fa-times"></i>
-							</a>
+							<span class="role-badge"> 
+								<span th:text="${role.roleDescription}"></span>
+								<!-- Cross sign for deleting a role -->
+								<a th:href="@{/dashboard-service/nmpc/delete-role(userName=${userName}, role=${role.id})}" class="text-danger ml-2 delete-role-link"> 
+									<i class="fas fa-times"></i>
+								</a>
 							</span>
 						</th:block>
 					</div>
 				</div>
 
-
 				<th:block th:if="${noRole}">
 					<p class="no-role-msg">No available roles to assign.</p>
 				</th:block>
+
 				<th:block th:unless="${noRole}">
 					<div class="form-group">
-						<label for="newRole">Assign New Role</label> <select id="newRole"
-							name="newRole" class="form-control">
-							<option th:each="role : ${availableRoles}" th:value="${role.id}"
-								th:text="${role.roleDescription}"></option>
+						<label for="newRole">Assign New Role</label> 
+						<select id="newRole" name="newRole" class="form-control">
+							<option th:each="role : ${availableRoles}" th:value="${role.id}" th:text="${role.roleDescription}"></option>
 						</select>
 					</div>
 					<button type="submit" class="btn btn-save">Save</button>
 				</th:block>
-
 
 			</form>
 		</div>
@@ -204,9 +202,38 @@ h2 {
 
 	<!-- Bootstrap JS -->
 	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-	<script
-		src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-	<script
-		src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+	
+	<!-- Custom JS for alert messages -->
+	<script>
+		// Add confirmation popup when clicking on the delete link
+		document.querySelectorAll('.delete-role-link').forEach(link => {
+			link.addEventListener('click', function(event) {
+				// Prevent default action of the link
+				event.preventDefault();
+				
+				// Show confirmation dialog
+				let confirmAction = confirm("Are you sure you want to delete this role?");
+				
+				// If the user confirms, proceed to the link (delete the role)
+				if (confirmAction) {
+					window.location.href = this.href;
+				}
+			});
+		});
+
+		// Add confirmation popup when submitting the form to save a new role
+		document.getElementById('assignRoleForm').addEventListener('submit', function(event) {
+			// Show confirmation dialog
+			let confirmSave = confirm("Are you sure you want to assign the new role to this username?");
+			
+			// If the user cancels, prevent the form submission
+			if (!confirmSave) {
+				event.preventDefault();
+			}
+		});
+	</script>
+
 </body>
 </html>
