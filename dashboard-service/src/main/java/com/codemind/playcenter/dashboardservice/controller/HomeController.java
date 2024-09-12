@@ -85,7 +85,6 @@ public class HomeController {
 	public String saveRoleAssignment(@RequestParam("userName") String userName,
 			@RequestParam("newRole") String newRole) {
 
-		logger.info("Newly role [{}] assigned to this User Name :-> {}", newRole, userName);
 		WebUser user = proxy.getUser(userName);
 		List<Role> assignedRoles = user.getRoles();
 		Role role = proxy.getRoleById(Integer.parseInt(newRole));
@@ -101,7 +100,15 @@ public class HomeController {
 	}
 
 	@GetMapping("/delete-role")
-	public String deleteRole(@RequestParam("userName") String userName, @RequestParam("role") String role) {
+	public String deleteRole(@RequestParam("userName") String userName, @RequestParam("role") String roleId) {
+		
+		WebUser user = proxy.getUser(userName);
+		List<Role> assignedRoles = user.getRoles();
+		Role role = proxy.getRoleById(Integer.parseInt(roleId));
+		assignedRoles.remove(role);
+		user.setRoles(assignedRoles);
+
+		proxy.updateUser(user);
 
 		logger.info("Delete role [{}] for this User Name :-> {}", role, userName);
 
