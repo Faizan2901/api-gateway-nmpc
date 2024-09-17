@@ -1,16 +1,28 @@
 package com.codemind.playcenter.attendanceservice.entity;
 
+import java.time.LocalDate;
+
 public class Student {
-	
+
 	private Integer id;
-	
+
 	private String userName;
-	
+
 	private String firstName;
-	
+
 	private String middleName;
-	
+
 	private String lastName;
+
+	private LocalDate admissionDate;
+
+	public LocalDate getAdmissionDate() {
+		return admissionDate;
+	}
+
+	public void setAdmissionDate(LocalDate admissionDate) {
+		this.admissionDate = admissionDate;
+	}
 
 	public Integer getId() {
 		return id;
@@ -51,7 +63,5 @@ public class Student {
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
 	}
-	
-	
 
 }

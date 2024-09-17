@@ -2,8 +2,12 @@ package com.codemind.playcenter.attendanceservice.controller;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +23,8 @@ import com.codemind.playcenter.attendanceservice.dao.StudentAttendanceDAO;
 import com.codemind.playcenter.attendanceservice.entity.Student;
 import com.codemind.playcenter.attendanceservice.entity.StudentAttendance;
 import com.codemind.playcenter.attendanceservice.proxy.StudentProxy;
+
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/attendance")
@@ -154,5 +160,65 @@ public class AttendanceController {
 				+ "/attendance-service/attendance/attended-student";
 
 	}
+
+	@GetMapping("/student-attendance-board")
+	private String getStudentInfo(Model model) {
+		String authenticateUserName = defaultController.getAuthenticatedUserName();
+		Student student = studentProxy.getExististingUser(authenticateUserName);
+
+		LocalDate admissionDate = student.getAdmissionDate();
+		LocalDate date2 = LocalDate.now();
+		List<String> attendanceMonth = new ArrayList<>();
+		while (admissionDate.isBefore(date2)) {
+			attendanceMonth.add(admissionDate.getMonth() + "-" + admissionDate.getYear());
+			admissionDate = admissionDate.plusMonths(1); // Use plusMonths(1) instead
+		}
+
+		model.addAttribute("username", student.getFirstName());
+		model.addAttribute("attendanceMonth", attendanceMonth);
+		return "/student-attendance-board"; // Remove hardcoded path
+	}
+
+	@PostMapping("/show-statistics")
+	private String showStatistics(@RequestParam(name = "selectedMonths", required = false) List<String> selectedMonths,
+			Model model, HttpSession httpSession) {
+
+		if (selectedMonths == null) {
+			return "redirect:" + applicationProperties.getApiGatewayUrl()
+			+ "/attendance-service/attendance/student-attendance-board";
+		}
+
+		model.addAttribute("selectedMonths", selectedMonths);
+		httpSession.setAttribute("selectedMonths", selectedMonths);
+		return "redirect:/student/statistics";
+	}
+
+//	@GetMapping("/statistics")
+//	private String showStatistics(HttpSession httpSession, Model model) {
+//
+//		List<String> months = new ArrayList<>();
+//
+//		Student student = studentDAO.findByUserName(authController.getAuthenticateUserName());
+//
+//		Map<String, Map<List<Date>, Integer>> dateMonthMap = new LinkedHashMap<>();
+//
+//		months = (List<String>) httpSession.getAttribute("selectedMonth");
+//
+//		for (String month : months) {
+//			List<Date> dates = studentAttendanceDAO.findAttendanceByStudentIdAndMonth(student.getId(),
+//					monthMap.get(month.substring(0, month.indexOf("-"))));
+//			int dayCount = studentAttendanceDAO.findAttendanceDaysByStudentIdAndMonth(student.getId(),
+//					monthMap.get(month.substring(0, month.indexOf("-"))));
+//			if (dayCount > 0) {
+//				HashMap<List<Date>, Integer> dateCountMap = new HashMap<>();
+//				dateCountMap.put(dates, dayCount);
+//				dateMonthMap.put(month, dateCountMap);
+//			}
+//		}
+//
+//		model.addAttribute("dateMonthMap", dateMonthMap);
+//		model.addAttribute("name", student.getFirstName() + " " + student.getLastName());
+//		return "/homeDirectory/show-attendance-statistics";
+//	}
 
 }
