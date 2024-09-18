@@ -1,5 +1,6 @@
 package com.codemind.playcenter.dashboardservice.webuser;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public class WebUser {
@@ -11,6 +12,15 @@ public class WebUser {
 	private String email;
 	private String mobileNo;
 	private int enabled;
+	private LocalDate admissionDate;
+
+	public LocalDate getAdmissionDate() {
+		return admissionDate;
+	}
+
+	public void setAdmissionDate(LocalDate admissionDate) {
+		this.admissionDate = admissionDate;
+	}
 
 	private List<Role> roles;
 

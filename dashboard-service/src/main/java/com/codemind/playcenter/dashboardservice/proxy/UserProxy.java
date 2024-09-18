@@ -29,5 +29,8 @@ public interface UserProxy {
 
 	@GetMapping("/role/role-id")
 	public Role getRoleById(@RequestParam("id") Integer id);
+	
+	@GetMapping("/users/user")
+	public WebUser getExististingUser(@RequestParam("name") String name);
 
 }

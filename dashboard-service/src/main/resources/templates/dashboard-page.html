@@ -178,7 +178,7 @@
                 </li>
                 <th:block th:if="${isStudent}">
                 	<li class="nav-item">
-                    	<a class="nav-link" href="#">Student Dashboard <i class="fas fa-user-graduate"></i></a>
+                    	<a class="nav-link" th:href="@{/dashboard-service/student/student-attendance-board}">Student Dashboard <i class="fas fa-user-graduate"></i></a>
                 	</li>
                 </th:block>
                 <th:block th:if="${isManager}">
@@ -191,7 +191,7 @@
 	                    <a class="nav-link" th:href="@{/attendance-service/attendance/attendance-page}">Attendance-Bar <i class="fas fa-chart-bar"></i></a>
 	                </li>
 	                <li class="nav-item">
-	                    <a class="nav-link" th:href="@{/attendance-service/attendance/student-attendance-board}">Attendance-Statistics <i class="fas fa-chart-pie"></i></a>
+	                    <a class="nav-link" th:href="@{/dashboard-service/student/student-attendance-board}">Attendance-Statistics <i class="fas fa-chart-pie"></i></a>
 	                </li>
                	</th:block>
                 <li class="nav-item">

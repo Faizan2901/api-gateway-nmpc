@@ -161,38 +161,6 @@ public class AttendanceController {
 
 	}
 
-	@GetMapping("/student-attendance-board")
-	private String getStudentInfo(Model model) {
-		String authenticateUserName = defaultController.getAuthenticatedUserName();
-		Student student = studentProxy.getExististingUser(authenticateUserName);
-
-		LocalDate admissionDate = student.getAdmissionDate();
-		LocalDate date2 = LocalDate.now();
-		List<String> attendanceMonth = new ArrayList<>();
-		while (admissionDate.isBefore(date2)) {
-			attendanceMonth.add(admissionDate.getMonth() + "-" + admissionDate.getYear());
-			admissionDate = admissionDate.plusMonths(1); // Use plusMonths(1) instead
-		}
-
-		model.addAttribute("username", student.getFirstName());
-		model.addAttribute("attendanceMonth", attendanceMonth);
-		return "/student-attendance-board"; // Remove hardcoded path
-	}
-
-	@PostMapping("/show-statistics")
-	private String showStatistics(@RequestParam(name = "selectedMonths", required = false) List<String> selectedMonths,
-			Model model, HttpSession httpSession) {
-
-		if (selectedMonths == null) {
-			return "redirect:" + applicationProperties.getApiGatewayUrl()
-			+ "/attendance-service/attendance/student-attendance-board";
-		}
-
-		model.addAttribute("selectedMonths", selectedMonths);
-		httpSession.setAttribute("selectedMonths", selectedMonths);
-		return "redirect:/student/statistics";
-	}
-
 //	@GetMapping("/statistics")
 //	private String showStatistics(HttpSession httpSession, Model model) {
 //
