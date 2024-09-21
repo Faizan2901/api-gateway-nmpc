@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.codemind.playcenter.dashboardservice.config.ApplicationProperties;
+import com.codemind.playcenter.dashboardservice.entity.Role;
 import com.codemind.playcenter.dashboardservice.entity.WebUser;
 import com.codemind.playcenter.dashboardservice.proxy.AttendanceProxy;
 import com.codemind.playcenter.dashboardservice.proxy.UserProxy;
@@ -62,7 +64,7 @@ public class StudentStatController {
 
 		model.addAttribute("username", student.getFirstName());
 		model.addAttribute("attendanceMonth", attendanceMonth);
-		return "/student-attendance-board"; 
+		return "/student-attendance-board";
 	}
 
 	@PostMapping("/show-statistics")
@@ -86,25 +88,91 @@ public class StudentStatController {
 
 		WebUser student = studentProxy.getExististingUser(defaultController.getAuthenticatedUserName());
 
+		months = (List<String>) httpSession.getAttribute("selectedMonths");
+
 		Map<String, Map<List<Date>, Integer>> dateMonthMap = new LinkedHashMap<>();
 
 		Map<WebUser, Map<String, Map<List<Date>, Integer>>> finalStatMap = new LinkedHashMap<>();
 
-		months = (List<String>) httpSession.getAttribute("selectedMonths");
+		List<Role> roles = student.getRoles();
 
-		for (String month : months) {
-			int monthNumber = Integer.parseInt(monthMap.get(month.substring(0, month.indexOf("-"))));
-			int year = Integer.parseInt(month.substring(month.indexOf("-") + 1, month.length()));
-			List<Date> dates = attendanceProxy.getAttendedDates(student.getId(), monthNumber, year);
-			int dayCount = attendanceProxy.getAttendedDayCount(student.getId(), monthNumber, year);
-			if (dayCount > 0) {
-				HashMap<List<Date>, Integer> dateCountMap = new HashMap<>();
-				dateCountMap.put(dates, dayCount);
-				dateMonthMap.put(month, dateCountMap);
-				finalStatMap.put(student, dateMonthMap);
+		boolean isTeacher = roles.stream().anyMatch(role -> role.getRoleDescription().contains("TEACHER"));
+
+		if (isTeacher) {
+			List<WebUser> studentsList = studentProxy.getUserForManagement(1);
+
+			for (WebUser user : studentsList) {
+				for (String month : months) {
+					int monthNumber = Integer.parseInt(monthMap.get(month.substring(0, month.indexOf("-"))));
+					int year = Integer.parseInt(month.substring(month.indexOf("-") + 1, month.length()));
+					List<Date> dates = attendanceProxy.getAttendedDates(user.getId(), monthNumber, year);
+					int dayCount = attendanceProxy.getAttendedDayCount(user.getId(), monthNumber, year);
+					if (dayCount > 0) {
+						HashMap<List<Date>, Integer> dateCountMap = new HashMap<>();
+						dateCountMap.put(dates, dayCount);
+						dateMonthMap.put(month, dateCountMap);
+
+					}
+				}
+				finalStatMap.put(user, dateMonthMap);
 			}
+			for (Entry<WebUser, Map<String, Map<List<Date>, Integer>>> map : finalStatMap.entrySet()) {
+				WebUser stud = map.getKey();
+				Map<String, Map<List<Date>, Integer>> attendanceMap = map.getValue();
+
+				System.out.println(stud.getFirstName() + " " + stud.getMiddleName() + " " + stud.getLastName());
+
+				for (Entry<String, Map<List<Date>, Integer>> attendStat : attendanceMap.entrySet()) {
+					String monthName = attendStat.getKey();
+					Map<List<Date>, Integer> dates = attendStat.getValue();
+
+					System.out.println("Attendance Months:- " + monthName);
+
+					for (Entry<List<Date>, Integer> date : dates.entrySet()) {
+						List<Date> attendedDays = date.getKey();
+						Integer attendedDayCount = date.getValue();
+
+						System.out.println("Attended days count:- " + attendedDayCount);
+						for (Date d : attendedDays) {
+							System.out.println(d.toString());
+						}
+
+					}
+
+				}
+
+			}
+
+			model.addAttribute("finalStatMap", finalStatMap);
+			return "/student-stat-board";
 		}
-		
+
+		for (Entry<WebUser, Map<String, Map<List<Date>, Integer>>> map : finalStatMap.entrySet()) {
+			WebUser stud = map.getKey();
+			Map<String, Map<List<Date>, Integer>> attendanceMap = map.getValue();
+
+			System.out.println(stud.getFirstName() + " " + stud.getMiddleName() + " " + stud.getLastName());
+
+			for (Entry<String, Map<List<Date>, Integer>> attendStat : attendanceMap.entrySet()) {
+				String monthName = attendStat.getKey();
+				Map<List<Date>, Integer> dates = attendStat.getValue();
+
+				System.out.println("Attendance Months:- " + monthName);
+
+				for (Entry<List<Date>, Integer> date : dates.entrySet()) {
+					List<Date> attendedDays = date.getKey();
+					Integer attendedDayCount = date.getValue();
+
+					System.out.println("Attended days count:- " + attendedDayCount);
+					for (Date d : attendedDays) {
+						System.out.println(d.toString());
+					}
+
+				}
+
+			}
+
+		}
 
 		model.addAttribute("finalStatMap", finalStatMap);
 		model.addAttribute("name", student.getFirstName() + " " + student.getLastName());
