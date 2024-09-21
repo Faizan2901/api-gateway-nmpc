@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.codemind.playcenter.dashboardservice.webuser.Role;
-import com.codemind.playcenter.dashboardservice.webuser.WebUser;
+import com.codemind.playcenter.dashboardservice.entity.Role;
+import com.codemind.playcenter.dashboardservice.entity.WebUser;
 
 @FeignClient(name = "user-service")
 public interface UserProxy {

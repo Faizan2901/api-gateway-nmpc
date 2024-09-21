@@ -37,6 +37,7 @@ public class SecurityConfig {
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 	    http
 	        .authorizeHttpRequests(authorize -> authorize
+	        	.requestMatchers("/student/**").permitAll()
 	            .anyRequest().authenticated())
 	        .exceptionHandling(exceptionHandling -> exceptionHandling
 	            .authenticationEntryPoint((request, response, authException) -> {

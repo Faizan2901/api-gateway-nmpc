@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.codemind.playcenter.dashboardservice.config.ApplicationProperties;
+import com.codemind.playcenter.dashboardservice.entity.Role;
+import com.codemind.playcenter.dashboardservice.entity.WebUser;
 import com.codemind.playcenter.dashboardservice.proxy.UserProxy;
-import com.codemind.playcenter.dashboardservice.webuser.Role;
-import com.codemind.playcenter.dashboardservice.webuser.WebUser;
 
 @Controller
 @RequestMapping("/nmpc")

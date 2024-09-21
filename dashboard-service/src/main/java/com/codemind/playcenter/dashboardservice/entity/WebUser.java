@@ -1,10 +1,11 @@
-package com.codemind.playcenter.dashboardservice.webuser;
+package com.codemind.playcenter.dashboardservice.entity;
 
 import java.time.LocalDate;
 import java.util.List;
 
 public class WebUser {
 
+	private Integer id;
 	private String userName;
 	private String firstName;
 	private String middleName;
@@ -13,6 +14,14 @@ public class WebUser {
 	private String mobileNo;
 	private int enabled;
 	private LocalDate admissionDate;
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
 
 	public LocalDate getAdmissionDate() {
 		return admissionDate;

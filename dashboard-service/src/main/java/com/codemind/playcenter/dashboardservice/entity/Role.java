@@ -1,4 +1,4 @@
-package com.codemind.playcenter.dashboardservice.webuser;
+package com.codemind.playcenter.dashboardservice.entity;
 
 import java.util.Objects;
 
