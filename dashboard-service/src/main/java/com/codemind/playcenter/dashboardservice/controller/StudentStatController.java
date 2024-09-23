@@ -147,6 +147,20 @@ public class StudentStatController {
 			return "/student-stat-board";
 		}
 
+		for (String month : months) {
+			int monthNumber = Integer.parseInt(monthMap.get(month.substring(0, month.indexOf("-"))));
+			int year = Integer.parseInt(month.substring(month.indexOf("-") + 1, month.length()));
+			List<Date> dates = attendanceProxy.getAttendedDates(student.getId(), monthNumber, year);
+			int dayCount = attendanceProxy.getAttendedDayCount(student.getId(), monthNumber, year);
+			if (dayCount > 0) {
+				HashMap<List<Date>, Integer> dateCountMap = new HashMap<>();
+				dateCountMap.put(dates, dayCount);
+				dateMonthMap.put(month, dateCountMap);
+
+			}
+		}
+		finalStatMap.put(student, dateMonthMap);
+
 		for (Entry<WebUser, Map<String, Map<List<Date>, Integer>>> map : finalStatMap.entrySet()) {
 			WebUser stud = map.getKey();
 			Map<String, Map<List<Date>, Integer>> attendanceMap = map.getValue();

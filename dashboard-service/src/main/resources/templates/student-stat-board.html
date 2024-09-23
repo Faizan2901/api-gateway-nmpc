@@ -7,9 +7,7 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
     <meta http-equiv="Pragma" content="no-cache"/>
     <meta http-equiv="Expires" content="0"/>
-    <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <!-- Custom CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <style>
         body {
@@ -114,31 +112,36 @@
                             <th>Last Name</th>
                             <th>Middle Name</th>
                             <th>Month</th>
-                            <th>Attendance Date</th>
+                            <th>Attendance Date(s)</th>
                             <th>Total Days Attended</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Example data -->
-                        <tr>
-                            <td>john_doe</td>
-                            <td>John</td>
-                            <td>Doe</td>
-                            <td>Edward</td>
-                            <td>September</td>
-                            <td>12th September 2024</td>
-                            <td>18</td>
+                        <!-- Iterating over finalStatMap -->
+                        <tr th:each="entry : ${finalStatMap}">
+                            <td th:text="${entry.key.userName}">Username</td>
+                            <td th:text="${entry.key.firstName}">First Name</td>
+                            <td th:text="${entry.key.lastName}">Last Name</td>
+                            <td th:text="${entry.key.middleName}">Middle Name</td>
+
+                            <!-- Month and Dates Iteration -->
+                            <td colspan="3">
+                                <table class="table table-bordered">
+                                    <tbody>
+                                        <tr th:each="monthEntry : ${entry.value}">
+                                            <td th:text="${monthEntry.key}">Month</td>
+                                            <td>
+                                                <!-- Iterate over the list of dates inside dateEntry.key -->
+                                                <ul>
+                                                    <li th:each="date : ${monthEntry.value}" th:text="${#dates.format(date, 'dd MMM yyyy')}">Date</li>
+                                                </ul>
+                                            </td>
+                                            <td th:text="${monthEntry.value.value}">Total Days Attended</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
                         </tr>
-                        <tr>
-                            <td>jane_smith</td>
-                            <td>Jane</td>
-                            <td>Smith</td>
-                            <td>Ann</td>
-                            <td>September</td>
-                            <td>12th September 2024</td>
-                            <td>20</td>
-                        </tr>
-                        <!-- Add dynamic data using Thymeleaf here -->
                     </tbody>
                 </table>
             </div>
@@ -152,7 +155,6 @@
         </div>
     </footer>
 
-    <!-- Bootstrap JS and dependencies -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
