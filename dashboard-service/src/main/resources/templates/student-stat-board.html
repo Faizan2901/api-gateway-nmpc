@@ -124,19 +124,31 @@
                             <td th:text="${entry.key.lastName}">Last Name</td>
                             <td th:text="${entry.key.middleName}">Middle Name</td>
 
-                            <!-- Month and Dates Iteration -->
+                            <!-- Iterate over the nested map for month and attendance data -->
                             <td colspan="3">
                                 <table class="table table-bordered">
                                     <tbody>
                                         <tr th:each="monthEntry : ${entry.value}">
                                             <td th:text="${monthEntry.key}">Month</td>
-                                            <td>
-                                                <!-- Iterate over the list of dates inside dateEntry.key -->
-                                                <ul>
-                                                    <li th:each="date : ${monthEntry.value}" th:text="${#dates.format(date, 'dd MMM yyyy')}">Date</li>
-                                                </ul>
+
+                                            <!-- Iterate over the innermost map for dates and attendance count -->
+                                            <td colspan="2">
+                                                <table class="table table-bordered">
+                                                    <tbody>
+                                                        <tr th:each="dateEntry : ${monthEntry.value}">
+                                                            <td>
+                                                                <ul class="list-unstyled">
+                                                                    <!-- Iterate through the list of dates and display each one vertically -->
+                                                                    <li th:each="date : ${dateEntry.key}" th:text="${#dates.format(date, 'dd MMM yyyy')}">
+                                                                        Attendance Date
+                                                                    </li>
+                                                                </ul>
+                                                            </td>
+                                                            <td th:text="${dateEntry.value}">Total Days Attended</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
                                             </td>
-                                            <td th:text="${monthEntry.value.value}">Total Days Attended</td>
                                         </tr>
                                     </tbody>
                                 </table>

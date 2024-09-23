@@ -1,6 +1,7 @@
 package com.codemind.playcenter.dashboardservice.controller;
 
 import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -103,15 +104,23 @@ public class StudentStatController {
 
 			for (WebUser user : studentsList) {
 				for (String month : months) {
-					int monthNumber = Integer.parseInt(monthMap.get(month.substring(0, month.indexOf("-"))));
-					int year = Integer.parseInt(month.substring(month.indexOf("-") + 1, month.length()));
-					List<Date> dates = attendanceProxy.getAttendedDates(user.getId(), monthNumber, year);
-					int dayCount = attendanceProxy.getAttendedDayCount(user.getId(), monthNumber, year);
-					if (dayCount > 0) {
-						HashMap<List<Date>, Integer> dateCountMap = new HashMap<>();
-						dateCountMap.put(dates, dayCount);
-						dateMonthMap.put(month, dateCountMap);
+					// Extract month and year from the "month" string (formatted as "MM-YYYY")
+					String monthPart = month.substring(0, month.indexOf("-"));
+					int monthNumber = Integer.parseInt(monthMap.get(monthPart));
+					int year = Integer.parseInt(month.substring(month.indexOf("-") + 1));
 
+					// Retrieve attendance data from the attendanceProxy
+					List<Date> attendedDates = attendanceProxy.getAttendedDates(user.getId(), monthNumber, year);
+					int attendedDayCount = attendanceProxy.getAttendedDayCount(user.getId(), monthNumber, year);
+
+					// Only add entries if the student has attended days
+					if (attendedDayCount > 0 && attendedDates != null && !attendedDates.isEmpty()) {
+						// Create the inner map to store the list of dates and the attendance count
+						Map<List<Date>, Integer> dateCountMap = new LinkedHashMap<>();
+						dateCountMap.put(attendedDates, attendedDayCount);
+
+						// Map the month to the dateCountMap
+						dateMonthMap.put(month, dateCountMap);
 					}
 				}
 				finalStatMap.put(user, dateMonthMap);
@@ -148,17 +157,26 @@ public class StudentStatController {
 		}
 
 		for (String month : months) {
-			int monthNumber = Integer.parseInt(monthMap.get(month.substring(0, month.indexOf("-"))));
-			int year = Integer.parseInt(month.substring(month.indexOf("-") + 1, month.length()));
-			List<Date> dates = attendanceProxy.getAttendedDates(student.getId(), monthNumber, year);
-			int dayCount = attendanceProxy.getAttendedDayCount(student.getId(), monthNumber, year);
-			if (dayCount > 0) {
-				HashMap<List<Date>, Integer> dateCountMap = new HashMap<>();
-				dateCountMap.put(dates, dayCount);
-				dateMonthMap.put(month, dateCountMap);
+			// Extract month and year from the "month" string (formatted as "MM-YYYY")
+			String monthPart = month.substring(0, month.indexOf("-"));
+			int monthNumber = Integer.parseInt(monthMap.get(monthPart));
+			int year = Integer.parseInt(month.substring(month.indexOf("-") + 1));
 
+			// Retrieve attendance data from the attendanceProxy
+			List<Date> attendedDates = attendanceProxy.getAttendedDates(student.getId(), monthNumber, year);
+			int attendedDayCount = attendanceProxy.getAttendedDayCount(student.getId(), monthNumber, year);
+
+			// Only add entries if the student has attended days
+			if (attendedDayCount > 0 && attendedDates != null && !attendedDates.isEmpty()) {
+				// Create the inner map to store the list of dates and the attendance count
+				Map<List<Date>, Integer> dateCountMap = new LinkedHashMap<>();
+				dateCountMap.put(attendedDates, attendedDayCount);
+
+				// Map the month to the dateCountMap
+				dateMonthMap.put(month, dateCountMap);
 			}
 		}
+
 		finalStatMap.put(student, dateMonthMap);
 
 		for (Entry<WebUser, Map<String, Map<List<Date>, Integer>>> map : finalStatMap.entrySet()) {
