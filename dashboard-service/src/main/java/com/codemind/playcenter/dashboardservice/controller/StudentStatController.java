@@ -103,82 +103,50 @@ public class StudentStatController {
 			List<WebUser> studentsList = studentProxy.getUserForManagement(1);
 
 			for (WebUser user : studentsList) {
-				for (String month : months) {
-					// Extract month and year from the "month" string (formatted as "MM-YYYY")
-					String monthPart = month.substring(0, month.indexOf("-"));
-					int monthNumber = Integer.parseInt(monthMap.get(monthPart));
-					int year = Integer.parseInt(month.substring(month.indexOf("-") + 1));
-
-					// Retrieve attendance data from the attendanceProxy
-					List<Date> attendedDates = attendanceProxy.getAttendedDates(user.getId(), monthNumber, year);
-					int attendedDayCount = attendanceProxy.getAttendedDayCount(user.getId(), monthNumber, year);
-
-					// Only add entries if the student has attended days
-					if (attendedDayCount > 0 && attendedDates != null && !attendedDates.isEmpty()) {
-						// Create the inner map to store the list of dates and the attendance count
-						Map<List<Date>, Integer> dateCountMap = new LinkedHashMap<>();
-						dateCountMap.put(attendedDates, attendedDayCount);
-
-						// Map the month to the dateCountMap
-						dateMonthMap.put(month, dateCountMap);
-					}
-				}
+				filledMonthWiseDatesAndDayCount(user, months, dateMonthMap);
 				finalStatMap.put(user, dateMonthMap);
 			}
-			for (Entry<WebUser, Map<String, Map<List<Date>, Integer>>> map : finalStatMap.entrySet()) {
-				WebUser stud = map.getKey();
-				Map<String, Map<List<Date>, Integer>> attendanceMap = map.getValue();
 
-				System.out.println(stud.getFirstName() + " " + stud.getMiddleName() + " " + stud.getLastName());
-
-				for (Entry<String, Map<List<Date>, Integer>> attendStat : attendanceMap.entrySet()) {
-					String monthName = attendStat.getKey();
-					Map<List<Date>, Integer> dates = attendStat.getValue();
-
-					System.out.println("Attendance Months:- " + monthName);
-
-					for (Entry<List<Date>, Integer> date : dates.entrySet()) {
-						List<Date> attendedDays = date.getKey();
-						Integer attendedDayCount = date.getValue();
-
-						System.out.println("Attended days count:- " + attendedDayCount);
-						for (Date d : attendedDays) {
-							System.out.println(d.toString());
-						}
-
-					}
-
-				}
-
-			}
+			printStudentAttendaceStatistics(finalStatMap);
 
 			model.addAttribute("finalStatMap", finalStatMap);
 			return "/student-stat-board";
 		}
 
+		filledMonthWiseDatesAndDayCount(student, months, dateMonthMap);
+
+		finalStatMap.put(student, dateMonthMap);
+
+		printStudentAttendaceStatistics(finalStatMap);
+
+		model.addAttribute("finalStatMap", finalStatMap);
+
+		return "/student-stat-board";
+	}
+
+	private void filledMonthWiseDatesAndDayCount(WebUser user, List<String> months,
+			Map<String, Map<List<Date>, Integer>> dateMonthMap) {
 		for (String month : months) {
-			// Extract month and year from the "month" string (formatted as "MM-YYYY")
+
 			String monthPart = month.substring(0, month.indexOf("-"));
 			int monthNumber = Integer.parseInt(monthMap.get(monthPart));
 			int year = Integer.parseInt(month.substring(month.indexOf("-") + 1));
 
-			// Retrieve attendance data from the attendanceProxy
-			List<Date> attendedDates = attendanceProxy.getAttendedDates(student.getId(), monthNumber, year);
-			int attendedDayCount = attendanceProxy.getAttendedDayCount(student.getId(), monthNumber, year);
+			List<Date> attendedDates = attendanceProxy.getAttendedDates(user.getId(), monthNumber, year);
+			int attendedDayCount = attendanceProxy.getAttendedDayCount(user.getId(), monthNumber, year);
 
-			// Only add entries if the student has attended days
 			if (attendedDayCount > 0 && attendedDates != null && !attendedDates.isEmpty()) {
-				// Create the inner map to store the list of dates and the attendance count
+
 				Map<List<Date>, Integer> dateCountMap = new LinkedHashMap<>();
 				dateCountMap.put(attendedDates, attendedDayCount);
 
-				// Map the month to the dateCountMap
 				dateMonthMap.put(month, dateCountMap);
 			}
 		}
 
-		finalStatMap.put(student, dateMonthMap);
+	}
 
+	private void printStudentAttendaceStatistics(Map<WebUser, Map<String, Map<List<Date>, Integer>>> finalStatMap) {
 		for (Entry<WebUser, Map<String, Map<List<Date>, Integer>>> map : finalStatMap.entrySet()) {
 			WebUser stud = map.getKey();
 			Map<String, Map<List<Date>, Integer>> attendanceMap = map.getValue();
@@ -206,9 +174,6 @@ public class StudentStatController {
 
 		}
 
-		model.addAttribute("finalStatMap", finalStatMap);
-		model.addAttribute("name", student.getFirstName() + " " + student.getLastName());
-		return "/student-stat-board";
 	}
 
 }
