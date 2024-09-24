@@ -2,6 +2,7 @@ package com.codemind.playcenter.attendanceservice.controller;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,13 +33,17 @@ public class AttendanceController {
 
 	private ApplicationProperties applicationProperties;
 
+	private StudentBusinessController studentBusinessController;
+
 	@Autowired
 	public AttendanceController(DefaultController defaultController, StudentProxy studentProxy,
-			StudentAttendanceDAO studentAttendanceDAO, ApplicationProperties applicationProperties) {
+			StudentAttendanceDAO studentAttendanceDAO, ApplicationProperties applicationProperties,
+			StudentBusinessController studentBusinessController) {
 		this.defaultController = defaultController;
 		this.studentProxy = studentProxy;
 		this.studentAttendanceDAO = studentAttendanceDAO;
 		this.applicationProperties = applicationProperties;
+		this.studentBusinessController = studentBusinessController;
 	}
 
 	@GetMapping("/attendance-page")
@@ -153,6 +158,32 @@ public class AttendanceController {
 		return "redirect:" + applicationProperties.getApiGatewayUrl()
 				+ "/attendance-service/attendance/attended-student";
 
+	}
+
+	@GetMapping("/student-attendance-board")
+	private String getStudentInfo(Model model) {
+		String authenticateUserName = defaultController.getAuthenticatedUserName();
+		
+		List<Student> students=studentProxy.getStudentsForAttendance();
+		for(Student s:students) {
+			System.out.println(s);
+		}
+		
+		StudentAttendance studentAttendance = studentBusinessController.getAttendaceMonth();
+		Date firstDateOfAttendance = studentAttendance.getDate();
+		LocalDate admissionDate = firstDateOfAttendance.toLocalDate();
+
+		LocalDate currentDate = LocalDate.now();
+
+		List<String> attendanceMonth = new ArrayList<>();
+		while (admissionDate.isBefore(currentDate)) {
+			attendanceMonth.add(admissionDate.getMonth() + "-" + admissionDate.getYear());
+			admissionDate = admissionDate.plusMonths(1);
+		}
+
+		model.addAttribute("username", authenticateUserName);
+		model.addAttribute("attendanceMonth", attendanceMonth);
+		return "/student-attendance-board";
 	}
 
 }

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.codemind.playcenter.attendanceservice.config.ApplicationProperties;
 import com.codemind.playcenter.attendanceservice.dao.StudentAttendanceDAO;
+import com.codemind.playcenter.attendanceservice.entity.StudentAttendance;
 import com.codemind.playcenter.attendanceservice.proxy.StudentProxy;
 
 @RestController
@@ -48,6 +49,11 @@ public class StudentBusinessController {
 	public int getAttendedDayCount(@RequestParam("id") int id, @RequestParam("month") int month,
 			@RequestParam("year") int year) {
 		return studentAttendanceDAO.findAttendanceDaysByStudentIdAndMonth(id, month, year);
+	}
+
+	@GetMapping("/attendance-month")
+	public StudentAttendance getAttendaceMonth() {
+		return studentAttendanceDAO.findByFirstAttendanceMonth();
 	}
 
 }

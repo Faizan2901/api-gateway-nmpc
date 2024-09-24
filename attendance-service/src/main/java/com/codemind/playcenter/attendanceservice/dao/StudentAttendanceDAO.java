@@ -25,4 +25,7 @@ public interface StudentAttendanceDAO extends JpaRepository<StudentAttendance, I
 	@Query(value = "SELECT s FROM StudentAttendance s WHERE s.studentId = :id")
 	List<StudentAttendance> findAttendanceByStudentId(@Param("id") int id);
 	
+	@Query(value = "SELECT * FROM play_center.student_attendance order by date limit 1",nativeQuery = true)
+	StudentAttendance findByFirstAttendanceMonth();
+	
 }

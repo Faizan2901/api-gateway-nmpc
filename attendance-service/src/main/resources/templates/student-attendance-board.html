@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${username} +' - Attendance Updation Dashboard'"></title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- FontAwesome CSS for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .container {
+            margin-top: 50px;
+        }
+        h3 {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .table {
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+        }
+        .table th, .table td {
+            text-align: center;
+            vertical-align: middle;
+            padding: 15px;
+            color: #333;
+        }
+        .table thead th {
+            background-color: #007bff;
+            color: white;
+        }
+        .table tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+        .table tbody td input[type="checkbox"] {
+            transform: scale(1.3);
+        }
+        .btn-submit, .btn-outline-primary, .btn-outline-danger {
+            border-radius: 30px;
+            padding: 10px 20px;
+            font-weight: bold;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+        .btn-submit {
+            background-color: #28a745;
+            color: #fff;
+            margin-top: 20px;
+        }
+        .btn-submit:hover {
+            background-color: #218838;
+            transform: scale(1.05);
+        }
+        .btn-outline-primary:hover, .btn-outline-danger:hover {
+            transform: scale(1.05);
+        }
+        .text-center {
+            margin-top: 30px;
+        }
+        .footer {
+            background-color: #ffffff;
+            color: #333;
+            padding: 10px 0;
+            text-align: center;
+            box-shadow: 0 -2px 4px rgba(0,0,0,0.1);
+            margin-top: auto;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h3>Attendance Updation Action</h3>
+    <form action="#" th:action="@{/attendance-service/attendance/update}" method="post">
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover">
+                <thead>
+                <tr>
+                    <th>Select</th>
+                    <th>Month</th>
+                </tr>
+                </thead>
+                <tbody>
+                <th:block th:each="student : ${attendanceMonth}">
+                    <tr>
+                        <td><input type="checkbox" name="selectedMonths" th:value="${student}"></td>
+                        <td><span th:text="${student}"></span></td>
+                    </tr>
+                </th:block>
+                </tbody>
+            </table>
+        </div>
+        <div class="text-center">
+            <input type="submit" class="btn-submit" value="Submit">
+        </div>
+    </form>
+    <div class="text-center">
+        <button class="btn btn-outline-primary btn-sm" id="select-all">Select All</button>
+        <button class="btn btn-outline-danger btn-sm" id="clear-all">Clear</button>
+    </div>
+</div>
+
+<div th:if="${isNull}" class="text-center">
+    <h3>Please select at least one month!</h3>
+</div>
+
+<th:block th:each="month : ${selectedMonth}">
+    <h5 class="text-center" th:text="${month}"></h5>
+</th:block>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="container">
+        <p>&copy; 2024 Attendance Dashboard. All rights reserved.</p>
+    </div>
+</footer>
+
+<!-- jQuery and Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        // Select All button click event
+        $('#select-all').click(function() {
+            $('input[name="selectedMonths"]').prop('checked', true);
+        });
+
+        // Clear All button click event
+        $('#clear-all').click(function() {
+            $('input[name="selectedMonths"]').prop('checked', false);
+        });
+    });
+</script>
+</body>
+</html>

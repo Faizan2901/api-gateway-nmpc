@@ -64,4 +64,12 @@ public class Student {
 		this.lastName = lastName;
 	}
 
+	@Override
+	public String toString() {
+		return "Student [id=" + id + ", userName=" + userName + ", firstName=" + firstName + ", middleName="
+				+ middleName + ", lastName=" + lastName + ", admissionDate=" + admissionDate + "]";
+	}
+	
+	
+
 }
