@@ -82,6 +82,7 @@ public class StudentStatController {
 		return "redirect:" + applicationProperties.getApiGatewayUrl() + "/dashboard-service/student/statistics";
 	}
 
+	@SuppressWarnings("unchecked")
 	@GetMapping("/statistics")
 	private String showStatistics(HttpSession httpSession, Model model) {
 
@@ -91,7 +92,7 @@ public class StudentStatController {
 
 		months = (List<String>) httpSession.getAttribute("selectedMonths");
 
-		Map<String, Map<List<Date>, Integer>> dateMonthMap = new LinkedHashMap<>();
+		
 
 		Map<WebUser, Map<String, Map<List<Date>, Integer>>> finalStatMap = new LinkedHashMap<>();
 
@@ -103,6 +104,7 @@ public class StudentStatController {
 			List<WebUser> studentsList = studentProxy.getUserForManagement(1);
 
 			for (WebUser user : studentsList) {
+				Map<String, Map<List<Date>, Integer>> dateMonthMap = new LinkedHashMap<>();
 				filledMonthWiseDatesAndDayCount(user, months, dateMonthMap);
 				finalStatMap.put(user, dateMonthMap);
 			}
@@ -112,6 +114,8 @@ public class StudentStatController {
 			model.addAttribute("finalStatMap", finalStatMap);
 			return "/student-stat-board";
 		}
+		
+		Map<String, Map<List<Date>, Integer>> dateMonthMap = new LinkedHashMap<>();
 
 		filledMonthWiseDatesAndDayCount(student, months, dateMonthMap);
 
