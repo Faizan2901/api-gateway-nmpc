@@ -84,7 +84,7 @@
 
 <div class="container">
     <h3>Attendance Updation Action</h3>
-    <form action="#" th:action="@{/attendance-service/attendance/update}" method="post">
+    <form action="#" th:action="@{/attendance-service/attendance/show-statistics}" method="post">
         <div class="table-responsive">
             <table class="table table-bordered table-hover">
                 <thead>
@@ -94,10 +94,10 @@
                 </tr>
                 </thead>
                 <tbody>
-                <th:block th:each="student : ${attendanceMonth}">
+                <th:block th:each="month : ${attendanceMonth}">
                     <tr>
-                        <td><input type="checkbox" name="selectedMonths" th:value="${student}"></td>
-                        <td><span th:text="${student}"></span></td>
+                        <td><input type="checkbox" name="selectedUpdationMonths" th:value="${month}"></td>
+                        <td><span th:text="${month}"></span></td>
                     </tr>
                 </th:block>
                 </tbody>

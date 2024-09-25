@@ -2,7 +2,6 @@ package com.codemind.playcenter.attendanceservice.controller;
 
 import java.sql.Date;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,6 +19,7 @@ import com.codemind.playcenter.attendanceservice.dao.StudentAttendanceDAO;
 import com.codemind.playcenter.attendanceservice.entity.Student;
 import com.codemind.playcenter.attendanceservice.entity.StudentAttendance;
 import com.codemind.playcenter.attendanceservice.proxy.StudentProxy;
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/attendance")
@@ -163,12 +163,12 @@ public class AttendanceController {
 	@GetMapping("/student-attendance-board")
 	private String getStudentInfo(Model model) {
 		String authenticateUserName = defaultController.getAuthenticatedUserName();
-		
-		List<Student> students=studentProxy.getStudentsForAttendance();
-		for(Student s:students) {
+
+		List<Student> students = studentProxy.getStudentsForAttendance();
+		for (Student s : students) {
 			System.out.println(s);
 		}
-		
+
 		StudentAttendance studentAttendance = studentBusinessController.getAttendaceMonth();
 		Date firstDateOfAttendance = studentAttendance.getDate();
 		LocalDate admissionDate = firstDateOfAttendance.toLocalDate();
@@ -184,6 +184,30 @@ public class AttendanceController {
 		model.addAttribute("username", authenticateUserName);
 		model.addAttribute("attendanceMonth", attendanceMonth);
 		return "/student-attendance-board";
+	}
+
+	@PostMapping("/show-statistics")
+	private String showStatistics(
+			@RequestParam(name = "selectedUpdationMonths", required = false) List<String> selectedUpdationMonths,
+			Model model, HttpSession httpSession) {
+
+		if (selectedUpdationMonths == null) {
+			return "redirect:" + applicationProperties.getApiGatewayUrl()
+					+ "/attendance-service/attendance/student-attendance-board";
+		}
+
+		model.addAttribute("selectedUpdationMonths", selectedUpdationMonths);
+		httpSession.setAttribute("selectedUpdationMonths", selectedUpdationMonths);
+		return "redirect:" + applicationProperties.getApiGatewayUrl() + "/attendance-service/attendance/updation";
+	}
+
+	public String getAttendanceUpdationPage(HttpSession httpSession) {
+		
+		List<String> updationMonths = new ArrayList<>();
+
+		updationMonths = (List<String>) httpSession.getAttribute("selectedUpdationMonths");
+		
+		return null;
 	}
 
 }
