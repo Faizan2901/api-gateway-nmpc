@@ -46,7 +46,7 @@
         .table tbody tr:hover {
             background-color: #f1f1f1;
         }
-        .table tbody td input[type="checkbox"] {
+        .table tbody td input[type="radio"] {
             transform: scale(1.3);
         }
         .btn-submit, .btn-outline-primary, .btn-outline-danger {
@@ -84,7 +84,7 @@
 
 <div class="container">
     <h3>Attendance Updation Action</h3>
-    <form action="#" th:action="@{/attendance-service/attendance/show-statistics}" method="post">
+    <form action="#" th:action="@{/attendance-service/attendance/updation}" method="post">
         <div class="table-responsive">
             <table class="table table-bordered table-hover">
                 <thead>
@@ -96,7 +96,7 @@
                 <tbody>
                 <th:block th:each="month : ${attendanceMonth}">
                     <tr>
-                        <td><input type="checkbox" name="selectedUpdationMonths" th:value="${month}"></td>
+                        <td><input type="radio" name="selectedUpdationMonth" th:value="${month}"></td>
                         <td><span th:text="${month}"></span></td>
                     </tr>
                 </th:block>
@@ -107,14 +107,10 @@
             <input type="submit" class="btn-submit" value="Submit">
         </div>
     </form>
-    <div class="text-center">
-        <button class="btn btn-outline-primary btn-sm" id="select-all">Select All</button>
-        <button class="btn btn-outline-danger btn-sm" id="clear-all">Clear</button>
-    </div>
 </div>
 
 <div th:if="${isNull}" class="text-center">
-    <h3>Please select at least one month!</h3>
+    <h3>Please select a month!</h3>
 </div>
 
 <th:block th:each="month : ${selectedMonth}">
@@ -133,18 +129,5 @@
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-<script>
-    $(document).ready(function() {
-        // Select All button click event
-        $('#select-all').click(function() {
-            $('input[name="selectedMonths"]').prop('checked', true);
-        });
-
-        // Clear All button click event
-        $('#clear-all').click(function() {
-            $('input[name="selectedMonths"]').prop('checked', false);
-        });
-    });
-</script>
 </body>
 </html>

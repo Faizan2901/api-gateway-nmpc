@@ -2,6 +2,8 @@ package com.codemind.playcenter.attendanceservice.controller;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.time.Month;
+import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -186,28 +188,67 @@ public class AttendanceController {
 		return "/student-attendance-board";
 	}
 
-	@PostMapping("/show-statistics")
+	@PostMapping("/updation")
 	private String showStatistics(
-			@RequestParam(name = "selectedUpdationMonths", required = false) List<String> selectedUpdationMonths,
-			Model model, HttpSession httpSession) {
+			@RequestParam(name = "selectedUpdationMonth", required = false) String selectedUpdationMonth, Model model,
+			HttpSession httpSession) {
 
-		if (selectedUpdationMonths == null) {
+		if (selectedUpdationMonth == null) {
 			return "redirect:" + applicationProperties.getApiGatewayUrl()
 					+ "/attendance-service/attendance/student-attendance-board";
 		}
 
-		model.addAttribute("selectedUpdationMonths", selectedUpdationMonths);
-		httpSession.setAttribute("selectedUpdationMonths", selectedUpdationMonths);
-		return "redirect:" + applicationProperties.getApiGatewayUrl() + "/attendance-service/attendance/updation";
+		// Parse the month and year from the input string "JANUARY-2024"
+		YearMonth yearMonth = parseMonthYear(selectedUpdationMonth);
+
+		// Generate the list of days for the given month and year
+		List<LocalDate> daysInMonth = getDaysInMonth(yearMonth);
+
+		// Add the month and year for display in the template
+		model.addAttribute("selectedMonth", yearMonth.getMonth().name() + "-" + yearMonth.getYear());
+		model.addAttribute("daysInMonth", daysInMonth);
+		model.addAttribute("selectedUpdationMonth", selectedUpdationMonth);
+		httpSession.setAttribute("selectedUpdationMonths", selectedUpdationMonth);
+		return "/show-calendar";
 	}
 
-	public String getAttendanceUpdationPage(HttpSession httpSession) {
-		
-		List<String> updationMonths = new ArrayList<>();
+//	@GetMapping("/show-calendar")
+//	public String getAttendanceUpdationPage(HttpSession httpSession) {
+//
+//		List<String> updationMonths = new ArrayList<>();
+//
+//		updationMonths = (List<String>) httpSession.getAttribute("selectedUpdationMonths");
+//
+//		return null;
+//	}
 
-		updationMonths = (List<String>) httpSession.getAttribute("selectedUpdationMonths");
-		
-		return null;
+	// Method to parse the month-year string (e.g., "JANUARY-2024")
+	private YearMonth parseMonthYear(String monthYear) {
+		// Split the string into month and year
+		String[] parts = monthYear.split("-");
+		String monthName = parts[0]; // e.g., "JANUARY"
+		int year = Integer.parseInt(parts[1]); // e.g., 2024
+
+		// Convert month name to Month enum
+		Month month = Month.valueOf(monthName.toUpperCase());
+
+		// Return a YearMonth object
+		return YearMonth.of(year, month.getValue());
+	}
+
+	// Method to get all days of the given month
+	private List<LocalDate> getDaysInMonth(YearMonth yearMonth) {
+		List<LocalDate> days = new ArrayList<>();
+		for (int day = 1; day <= yearMonth.lengthOfMonth(); day++) {
+			LocalDate currentDay = LocalDate.of(yearMonth.getYear(), yearMonth.getMonthValue(), day);
+			
+			days.add(currentDay);
+			if (currentDay.equals(LocalDate.now())) {
+				break;
+			}
+
+		}
+		return days;
 	}
 
 }
