@@ -241,7 +241,7 @@ public class AttendanceController {
 		List<LocalDate> days = new ArrayList<>();
 		for (int day = 1; day <= yearMonth.lengthOfMonth(); day++) {
 			LocalDate currentDay = LocalDate.of(yearMonth.getYear(), yearMonth.getMonthValue(), day);
-			
+
 			days.add(currentDay);
 			if (currentDay.equals(LocalDate.now())) {
 				break;
@@ -249,6 +249,14 @@ public class AttendanceController {
 
 		}
 		return days;
+	}
+
+	@PostMapping("/show-attendance")
+	public String getAttendanceUpdationPage(@RequestParam("date") String date) {
+		LocalDate attendanceDate = LocalDate.of(Integer.parseInt(date.split("-")[0]),
+				Integer.parseInt(date.split("-")[1]), Integer.parseInt(date.split("-")[2]));
+		System.out.println(attendanceDate);
+		return null;
 	}
 
 }

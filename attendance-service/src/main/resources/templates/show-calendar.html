@@ -61,43 +61,16 @@
     <!-- Calendar Display -->
     <div class="calendar">
         <div class="calendar-day" th:each="day : ${daysInMonth}" th:text="${day.dayOfMonth}"
-             th:data-date="${day}" onclick="openAttendanceForm(this)">
+             th:data-date="${day}" onclick="submitAttendanceForm(this)">
         </div>
     </div>
 
-    <!-- Form Modal -->
-    <div class="modal" id="attendanceModal" tabindex="-1" role="dialog">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Update Attendance for <span id="selectedDate"></span></h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form action="#" th:action="@{/attendance-service/attendance/update}" method="post">
-                        <input type="hidden" name="date" id="attendanceDate">
-                        <div class="form-group">
-                            <label for="status">Attendance Status</label>
-                            <select class="form-control" id="status" name="status">
-                                <option value="Present">Present</option>
-                                <option value="Absent">Absent</option>
-                                <option value="Leave">Leave</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="remarks">Remarks</label>
-                            <textarea class="form-control" id="remarks" name="remarks" rows="3"></textarea>
-                        </div>
-                        <div class="text-center">
-                            <input type="submit" class="btn btn-success" value="Update">
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
+    <!-- Hidden Form to Submit Attendance -->
+    <form id="attendanceForm" th:action="@{/attendance-service/attendance/show-attendance}" method="post">
+        <input type="hidden" name="date" id="attendanceDate">
+        <!-- You can update this dynamically if needed -->
+        <!-- Additional fields for remarks, etc., can be added here -->
+    </form>
 </div>
 
 <!-- Footer -->
@@ -113,11 +86,10 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 <script>
-    function openAttendanceForm(dayElement) {
+    function submitAttendanceForm(dayElement) {
         const date = dayElement.getAttribute('data-date');
-        document.getElementById('selectedDate').textContent = date;
-        document.getElementById('attendanceDate').value = date;
-        $('#attendanceModal').modal('show');
+        document.getElementById('attendanceDate').value = date;  // Set the selected date in the hidden input
+        document.getElementById('attendanceForm').submit(); // Submit the form automatically
     }
 </script>
 
