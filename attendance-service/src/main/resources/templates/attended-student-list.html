@@ -159,7 +159,7 @@
                                 <td><span th:text="${student.firstName}"></span>&nbsp;<span th:text="${student.lastName}"></span></td>
                                 <td>
                                     <a
-                                        th:href="@{/attendance-service/attendance/deleteUser(studentId=${student.id})}"
+                                        th:href="@{/attendance-service/attendance/deleteUser(studentId=${student.id}, date=${todayDate})}"
                                         class="btn btn-delete"
                                         onclick="return confirm('Are you sure you want to remove attendance of this student?')">
                                     Remove</a>

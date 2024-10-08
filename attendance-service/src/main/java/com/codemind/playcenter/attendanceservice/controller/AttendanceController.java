@@ -73,7 +73,7 @@ public class AttendanceController {
 					+ "/attendance-service/attendance/attended-student";
 		}
 		model.addAttribute("allStudents", allstudentList);
-
+		model.addAttribute("todayDate", date);
 		System.out.println("Authenticated Username => " + username);
 
 		return "/attendance-page";
@@ -82,44 +82,63 @@ public class AttendanceController {
 
 	@PostMapping("/fill-info")
 	public String insertAttendanceInfo(
-			@RequestParam(name = "selectedItems", required = false) List<String> selectedItems, Model model) {
+			@RequestParam(name = "selectedItems", required = false) List<String> selectedItems,
+			@RequestParam(name = "attendanceDate", required = false) String attendanceDateStr, Model model) {
 
-		LocalDate date = LocalDate.now();
+		// Use provided date or fallback to the current date
+		LocalDate date;
+		if (attendanceDateStr != null && !attendanceDateStr.isEmpty()) {
+			date = LocalDate.parse(attendanceDateStr); // Expecting date in "yyyy-MM-dd" format
+		} else {
+			date = LocalDate.now();
+		}
 
 		List<StudentAttendance> tempStudentAttendance = studentAttendanceDAO.findByDate(date);
 
-		if (selectedItems == null && tempStudentAttendance.isEmpty() && selectedItems.size() == 0) {
+		// Check for empty selectedItems and existing attendance records
+		if ((selectedItems == null || selectedItems.isEmpty()) && tempStudentAttendance.isEmpty()) {
 			return "redirect:" + applicationProperties.getApiGatewayUrl()
 					+ "/attendance-service/attendance/attendance-page";
 		}
 
-		if (selectedItems != null) {
+		// Process the selected students for attendance
+		if (selectedItems != null && !selectedItems.isEmpty()) {
 			for (String selectString : selectedItems) {
 				Student student = studentProxy.getExististingUser(selectString);
 				StudentAttendance dbStoredStudentAttendance = studentAttendanceDAO
 						.findByStudentIdAndDate(student.getId(), date);
 				if (dbStoredStudentAttendance != null) {
-					continue;
+					continue; // Skip already recorded attendance
 				}
 				StudentAttendance studentAttendance = new StudentAttendance();
 				studentAttendance.setStudentId(student.getId());
-				studentAttendance.setDate(Date.valueOf(date));
+				studentAttendance.setDate(Date.valueOf(date)); // Save the provided or current date
 				studentAttendanceDAO.save(studentAttendance);
 			}
 			return "redirect:" + applicationProperties.getApiGatewayUrl()
-					+ "/attendance-service/attendance/attended-student";
-
+					+ "/attendance-service/attendance/attended-student?todayDate=" + date;
 		} else {
+			// If selectedItems is null, set a model attribute and redirect
 			model.addAttribute("isNull", true);
 			return "redirect:" + applicationProperties.getApiGatewayUrl()
-					+ "/attendance-service/attendance/attended-student";
+					+ "/attendance-service/attendance/attended-student?todayDate=" + date;
 		}
 	}
 
 	@GetMapping("/attended-student")
-	private String showAttendedStudentList(Model model) {
+	public String showAttendedStudentList(@RequestParam(value = "todayDate", required = false) String todayDateStr,
+			Model model) {
+		LocalDate date;
 
-		List<StudentAttendance> studentAttendance = studentAttendanceDAO.findByDate(LocalDate.now());
+		// Parse the date from the request parameter if present, otherwise use current
+		// date
+		if (todayDateStr != null) {
+			date = LocalDate.parse(todayDateStr); // Assuming the date format is correct (ISO)
+		} else {
+			date = LocalDate.now();
+		}
+
+		List<StudentAttendance> studentAttendance = studentAttendanceDAO.findByDate(date);
 
 		List<Student> allStudents = new ArrayList<>();
 
@@ -129,6 +148,7 @@ public class AttendanceController {
 			Student student = studentProxy.getExististingUserById(attendance.getStudentId());
 			allStudents.add(student);
 		}
+
 		if (totalStudents.size() != allStudents.size()) {
 			model.addAttribute("allPresent", true);
 		} else if (totalStudents.size() == allStudents.size()) {
@@ -136,30 +156,35 @@ public class AttendanceController {
 		}
 
 		model.addAttribute("allStudents", allStudents);
-		model.addAttribute("todayDate", LocalDate.now());
+		model.addAttribute("todayDate", date);
 
 		return "/attended-student-list";
 	}
 
 	@GetMapping("/deleteUser")
-	String deleteStudentFromAttendanceList(@RequestParam("studentId") String id) {
+	public String deleteStudentFromAttendanceList(@RequestParam("studentId") String id,
+			@RequestParam("date") String date) {
 
-		LocalDate date = LocalDate.now();
+		LocalDate attendanceDate = LocalDate.parse(date); // Parse the date string to LocalDate
 
 		Student student = studentProxy.getExististingUserById(Integer.parseInt(id));
 
-		StudentAttendance studentAttendance = studentAttendanceDAO.findByStudentIdAndDate(student.getId(), date);
+		// Find student attendance by student ID and the given date
+		StudentAttendance studentAttendance = studentAttendanceDAO.findByStudentIdAndDate(student.getId(),
+				attendanceDate);
 
+		// Delete attendance record by ID
 		studentAttendanceDAO.deleteById(studentAttendance.getId());
 
-		if (studentAttendanceDAO.findByDate(date).isEmpty()) {
+		// Redirect to attendance page if no more records exist for the given date,
+		// otherwise redirect to attended students
+		if (studentAttendanceDAO.findByDate(attendanceDate).isEmpty()) {
 			return "redirect:" + applicationProperties.getApiGatewayUrl()
 					+ "/attendance-service/attendance/attendance-page";
 		}
 
 		return "redirect:" + applicationProperties.getApiGatewayUrl()
-				+ "/attendance-service/attendance/attended-student";
-
+		+ "/attendance-service/attendance/attended-student?todayDate=" + date;
 	}
 
 	@GetMapping("/student-attendance-board")
@@ -212,16 +237,6 @@ public class AttendanceController {
 		return "/show-calendar";
 	}
 
-//	@GetMapping("/show-calendar")
-//	public String getAttendanceUpdationPage(HttpSession httpSession) {
-//
-//		List<String> updationMonths = new ArrayList<>();
-//
-//		updationMonths = (List<String>) httpSession.getAttribute("selectedUpdationMonths");
-//
-//		return null;
-//	}
-
 	// Method to parse the month-year string (e.g., "JANUARY-2024")
 	private YearMonth parseMonthYear(String monthYear) {
 		// Split the string into month and year
@@ -252,11 +267,36 @@ public class AttendanceController {
 	}
 
 	@PostMapping("/show-attendance")
-	public String getAttendanceUpdationPage(@RequestParam("date") String date) {
+	public String getAttendanceUpdationPage(@RequestParam("date") String date, Model model) {
 		LocalDate attendanceDate = LocalDate.of(Integer.parseInt(date.split("-")[0]),
 				Integer.parseInt(date.split("-")[1]), Integer.parseInt(date.split("-")[2]));
 		System.out.println(attendanceDate);
-		return null;
+		List<StudentAttendance> tempStudentAttendance = studentAttendanceDAO.findByDate(attendanceDate);
+
+		String username = defaultController.getAuthenticatedUserName();
+
+		List<Student> allstudentList = studentProxy.getStudentsForAttendance();
+
+		if (!tempStudentAttendance.isEmpty()) {
+			List<Student> studentList = tempStudentAttendance.stream()
+					.map(a -> studentProxy.getExististingUserById(a.getStudentId())).collect(Collectors.toList());
+			allstudentList.removeIf(allStud -> studentList.stream().anyMatch(stud -> stud.getId() == allStud.getId()));
+			model.addAttribute("isAlreadyAttended", true);
+		}
+
+		if (allstudentList.isEmpty()) {
+			model.addAttribute("allPresent", true);
+			// Pass the date as a query parameter
+			return "redirect:" + applicationProperties.getApiGatewayUrl()
+					+ "/attendance-service/attendance/attended-student?todayDate=" + attendanceDate;
+		}
+
+		model.addAttribute("todayDate", attendanceDate);
+		model.addAttribute("allStudents", allstudentList);
+
+		System.out.println("Authenticated Username => " + username);
+
+		return "/attendance-page";
 	}
 
 }

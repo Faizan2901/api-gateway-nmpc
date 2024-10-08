@@ -46,7 +46,7 @@
         .btn-dashboard:hover {
             background-color: #0056b3;
             transform: scale(1.05);
-            color: #fff !important; /* Keeps the text color the same */
+            color: #fff !important;
         }
         .content-section {
             flex: 1;
@@ -121,10 +121,14 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
                 <th:block th:if="${isAlreadyAttended}">
-                    <li class="nav-item">
-                        <a class="nav-link btn-dashboard" th:href="@{/attendance-service/attendance//attended-student}">Review Attendance</a>&nbsp;
-                    </li>
-                </th:block>
+				    <li class="nav-item">
+				        <a class="nav-link btn-dashboard"
+				           th:href="@{/attendance-service/attendance/attended-student(todayDate=${todayDate})}">
+				           Review Attendance
+				        </a>&nbsp;
+				    </li>
+				</th:block>
+
                 <li class="nav-item">
                     <a class="nav-link btn-dashboard" th:href="@{/dashboard-service/nmpc/dashboard-page}">Dashboard</a>
                 </li>
@@ -136,7 +140,13 @@
     <section class="content-section">
         <div class="container">
             <h2 class="section-title">Student Attendance</h2>
+            <h4 th:text="'Date: ' + ${todayDate}"></h4>
+            
+            <!-- Form for attendance submission -->
             <form action="#" th:action="@{/attendance-service/attendance/fill-info}" method="post">
+                <!-- Hidden input for attendanceDate -->
+                <input type="hidden" name="attendanceDate" th:value="${todayDate}">
+                
                 <div class="table-responsive">
                     <table class="table table-bordered table-hover">
                         <thead class="thead-light">
@@ -178,13 +188,8 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script>
-        window.onpageshow = function(event) {
-            if (event.persisted) {
-                window.location.reload(true);
-            }
-        };
-    </script>
+
+    <!-- JavaScript for form validation and confirmation -->
     <script>
         document.getElementById('submitAttendanceBtn').onclick = function() {
             var checkboxes = document.getElementsByName('selectedItems');
@@ -203,9 +208,9 @@
             }
 
             if (confirm('Are you sure you want to submit the Attendance Sheet?')) {
-                document.forms[0].submit();
-            }else{
-            	return false;
+                return true;  // Allow form submission
+            } else {
+                return false;  // Prevent form submission
             }
         };
     </script>
