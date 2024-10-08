@@ -1,0 +1,19 @@
+First of all i used Database as MySQL for storing coupon
+I have implement first five REST API smoothly and it is easy
+-> POST /coupons: Create a new coupon.
+-> GET /coupons: Retrieve all coupons.
+-> GET /coupons/{id}: Retrieve a specific coupon by its ID.
+-> PUT /coupons/{id}: Update a specific coupon by its ID.
+-> DELETE /coupons/{id}: Delete a specific coupon by its ID.
+
+After that Number 6 REST API
+-> POST /applicable-coupons: Fetch all applicable coupons for a given cart and
+calculate the total discount that will be applied by each coupon.
+In which,first time i read task for this api and then i confused little bit,but mention request and response(in document) give idea about cart-item helped me,then i have come with logic
+also facing some issue regarding discount on whole cart or on particular cart item
+
+For Number 7 REST API
+-> It is little complicated than number 6,but it is mention that discount will be apply to specific coupon id and also confused regarding for updating finalprice and discounted price for whole cart item and on particular item
+-> I have implemented logic as my thought process
+
+Also i hanlded error handling especially when there is no coupon availabe for given id
