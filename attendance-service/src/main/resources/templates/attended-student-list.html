@@ -129,7 +129,7 @@
             <ul class="navbar-nav ml-auto">
             <th:block th:if="${allPresent}">
                 <li class="nav-item">
-                    <a class="nav-link btn-dashboard" th:href="@{/attendance-service/attendance/attendance-page}">Attendance Bar</a>&nbsp&nbsp
+                    <a class="nav-link btn-dashboard" th:href="@{/attendance-service/attendance/attendance-page(todayDate=${todayDate})}">Attendance Bar</a>&nbsp&nbsp
                 </li>
             </th:block>
             <li class="nav-item">

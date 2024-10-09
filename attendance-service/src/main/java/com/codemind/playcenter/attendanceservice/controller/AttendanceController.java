@@ -49,9 +49,18 @@ public class AttendanceController {
 	}
 
 	@GetMapping("/attendance-page")
-	public String getAttendancePage(Model model) {
+	public String getAttendancePage(Model model,
+			@RequestParam(value = "todayDate", required = false) String todayDateStr) {
 
-		LocalDate date = LocalDate.now();
+		LocalDate date;
+
+		// Parse the date from the request parameter if present, otherwise use current
+		// date
+		if (todayDateStr != null) {
+			date = LocalDate.parse(todayDateStr); // Assuming the date format is correct (ISO)
+		} else {
+			date = LocalDate.now();
+		}
 
 		List<StudentAttendance> tempStudentAttendance = studentAttendanceDAO.findByDate(date);
 
@@ -180,11 +189,11 @@ public class AttendanceController {
 		// otherwise redirect to attended students
 		if (studentAttendanceDAO.findByDate(attendanceDate).isEmpty()) {
 			return "redirect:" + applicationProperties.getApiGatewayUrl()
-					+ "/attendance-service/attendance/attendance-page";
+					+ "/attendance-service/attendance/attendance-page?todayDate=" + date;
 		}
 
 		return "redirect:" + applicationProperties.getApiGatewayUrl()
-		+ "/attendance-service/attendance/attended-student?todayDate=" + date;
+				+ "/attendance-service/attendance/attended-student?todayDate=" + date;
 	}
 
 	@GetMapping("/student-attendance-board")
@@ -200,10 +209,14 @@ public class AttendanceController {
 		Date firstDateOfAttendance = studentAttendance.getDate();
 		LocalDate admissionDate = firstDateOfAttendance.toLocalDate();
 
+		int dbFirstMonth = admissionDate.getMonthValue();
+
 		LocalDate currentDate = LocalDate.now();
 
+		int currentMonth = currentDate.getMonthValue();
+
 		List<String> attendanceMonth = new ArrayList<>();
-		while (admissionDate.isBefore(currentDate)) {
+		for (int i = dbFirstMonth; i <= currentMonth; i++) {
 			attendanceMonth.add(admissionDate.getMonth() + "-" + admissionDate.getYear());
 			admissionDate = admissionDate.plusMonths(1);
 		}
